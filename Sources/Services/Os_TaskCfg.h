@@ -1,28 +1,25 @@
 /****************************************************************************************************/
 /**
 
-\file       SchM_Cfg.h
-\brief      Scheduler Module Configuration 
+\file       Os_TaskCfg.h
+\brief      Operative System Task Configuration 
 \author     Gerardo Valdovinos
 \version    1.0
-\date       22/10/2014
+\date       03/11/2014
 */
 /****************************************************************************************************/
 
 /****************************************************************************************************/
 
-#ifndef __SCH_M_CFG_H
-#define __SCH_M_CFG_H
+#ifndef __OS_TASK_CFG_H
+#define __OS_TASK_CFG_H
 
 
 /*****************************************************************************************************
 * Include files
 *****************************************************************************************************/
-#include <hidef.h>          /* common defines and macros */
-#include "derivative.h"     /* derivative-specific definitions */
-#include "Typedefs.h"
+#include "Os_Types.h"
 
-#include "SchM_Tasks.h"
 /*****************************************************************************************************
 * Definition of module wide VARIABLES
 *****************************************************************************************************/
@@ -32,7 +29,7 @@
 *****************************************************************************************************/
 
 /*-- Macros ------------------------------------------------------------------*/
-/*
+
 typedef enum
 {
     TASK0,
@@ -41,9 +38,23 @@ typedef enum
     TASK3,
     TASK4,
     TASK5,
-    TASK6    
-}teTask;
- */
+    TASK6,
+    TASK7    
+}teTaskID;
+
+typedef enum
+{
+    PRIORITY0 = 0,
+    PRIORITY1,
+    PRIORITY2,
+    PRIORITY3,
+    PRIORITY4,
+    PRIORITY5,
+    PRIORITY6,
+    PRIORITY7,
+    PRIORITY8
+}tePriority;
+
 #define MASK_1ms        (0b00000001)
 #define MASK_2ms        (0b00000011)
 #define MASK_4ms        (0b00000111)
@@ -65,22 +76,23 @@ typedef enum
  
 typedef struct
 {
-    //teTask                  eTask;              // Task ID
+    teTaskID                eTaskID;            // Task ID
+    tePriority              ePriority;          // Task priority
     u8                      u8Mask;             // Mask of task
     u8                      u8Offset;           // Offset of task
     vpfn                    vpCallback;         // Task Callback    
-}tstSchM_Task;
+}tstOs_Task;
 
 typedef struct
 {
     u8                      u8NumberOfTasks;    // Number of tasks
-    const tstSchM_Task*     pstSchM_Task;       // Pointer to a task configuration
-}tstSchM_TaskCfg;
+    const tstOs_Task*       pstOs_Task;         // Pointer to a task configuration
+}tstOs_TaskCfg;
 
 /*-- Function Prototypes -----------------------------------------------------*/
 
-extern const tstSchM_TaskCfg stSchM_TaskCfg[];
+extern const tstOs_TaskCfg stOs_TaskCfg[];
 
-#endif /* __SCH_M_CFG_H */
+#endif /* __OS_TASK_CFG_H */
 
 /*******************************************************************************/

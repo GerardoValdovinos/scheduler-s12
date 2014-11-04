@@ -1,24 +1,25 @@
 /****************************************************************************************************/
 /**
 
-\file       SchM_Tasks.h
-\brief      Scheduler Module Tasks
+\file       Os_TaskM.h
+\brief      Task manager services
 \author     Gerardo Valdovinos
 \version    1.0
-\date       22/10/2014
+\date       30/10/2014
 */
 /****************************************************************************************************/
 
 /****************************************************************************************************/
 
-#ifndef __SCH_M_TASKS_H
-#define __SCH_M_TASKS_H
+#ifndef __OS_TASKM_H
+#define __OS_TASKM_H
 
 
 /*****************************************************************************************************
 * Include files
 *****************************************************************************************************/
-#include "Typedefs.h"
+#include "Os_Types.h"
+
 /*****************************************************************************************************
 * Definition of module wide VARIABLES
 *****************************************************************************************************/
@@ -31,14 +32,11 @@
 
 
 /*-- Function Prototypes -----------------------------------------------------*/
-void SchM_Task_1ms(void);
-void SchM_Task_4ms(void);
-void SchM_Task_8ms(void);
-void SchM_Task_16ms(void);
-void SchM_Task_32ms(void);
-void SchM_Task_64ms(void);
-void SchM_Background(void);
+void Os_ActivateTask(void);
+void Os_TerminateTask(void);
+void Os_GetTaskID(void);
+void Os_GetTaskState(void);
 
-#endif /* __SCH_M_TASKS_H */
+#endif /* __OS_TASKM_H */
 
 /*******************************************************************************/

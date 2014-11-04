@@ -1,10 +1,10 @@
 /*******************************************************************************/
 /**
-\file       SchM_Cfg.c
-\brief      Scheduler Module Configuration
+\file       Os_TaskM.c
+\brief      Task manager services
 \author     Gerardo Valdovinos
 \version    1.0
-\date       22/10/2014
+\date       30/10/2014
 */
 /****************************************************************************************************/
 
@@ -13,7 +13,8 @@
 *****************************************************************************************************/
 
 /** Own headers */
-#include "SchM_Cfg.h"
+#include "Os_TaskM.h"
+
 /** Used modules */
 
 /*****************************************************************************************************
@@ -23,15 +24,7 @@
 /*****************************************************************************************************
 * Declaration of module wide FUNCTIONs 
 *****************************************************************************************************/
-//extern void SchM_Task_1ms(void);
-/*
-void SchM_Task_4ms(void);
-void SchM_Task_8ms(void);
-void SchM_Task_16ms(void);
-void SchM_Task_32ms(void);
-void SchM_Task_64ms(void);
-void SchM_Background(void);
-*/
+
 /*****************************************************************************************************
 * Definition of module wide MACROs / #DEFINE-CONSTANTs 
 *****************************************************************************************************/
@@ -43,35 +36,6 @@ void SchM_Background(void);
 /*****************************************************************************************************
 * Definition of module wide (CONST-) CONSTANTs 
 *****************************************************************************************************/
-const tstSchM_Task stSchM_Task[] =
-{
-    {
-        MASK_1ms,           // Mask
-        OFFSET0,            // Offset
-        SchM_Task_1ms       // Callback
-    },
-    {
-        MASK_4ms,           // Mask
-        OFFSET1,            // Offset
-        SchM_Task_4ms       // Callback
-    },  
-    {
-        MASK_8ms,           // Mask
-        OFFSET3,            // Offset
-        SchM_Task_8ms       // Callback
-    },
-    {
-        MASK_16ms,          // Mask
-        OFFSET7,            // Offset
-        SchM_Task_16ms       // Callback
-    }      
-};
-
-const tstSchM_TaskCfg stSchM_TaskCfg[] =
-{
-    sizeof(stSchM_Task)/sizeof(stSchM_Task[0]),
-    &stSchM_Task[0]
-};
 
 /*****************************************************************************************************
 * Code of module wide FUNCTIONS
@@ -79,11 +43,50 @@ const tstSchM_TaskCfg stSchM_TaskCfg[] =
 
 /****************************************************************************************************/
 /**
-* \brief    
+* \brief    Activate Task
 * \author   Gerardo Valdovinos
 * \param    void
-* \return   void
-* \Notes:   We take this code from Abrahams example =)     
+* \return   void     
 */
+void Os_ActivateTask(void)
+{
+    
+}
+
+/****************************************************************************************************/
+/**
+* \brief    Terminate Task
+* \author   Gerardo Valdovinos
+* \param    void
+* \return   void     
+*/
+void Os_TerminateTask(void)
+{
+    
+}
+
+/****************************************************************************************************/
+/**
+* \brief    Get Task ID
+* \author   Gerardo Valdovinos
+* \param    void
+* \return   void   
+*/
+void Os_GetTaskID(void)
+{
+    
+}
+
+/****************************************************************************************************/
+/**
+* \brief    Get Task state
+* \author   Gerardo Valdovinos
+* \param    void
+* \return   void    
+*/
+void Os_GetTaskState(void)
+{
+    
+}
 
 /****************************************************************************************************/

@@ -1,10 +1,10 @@
 /*******************************************************************************/
 /**
-\file       SchM_Tasks.c
-\brief      Scheduler Module Tasks
+\file       Os_Task.c
+\brief      Operative System Module Tasks
 \author     Gerardo Valdovinos
 \version    1.0
-\date       22/10/2014
+\date       03/11/2014
 */
 /****************************************************************************************************/
 
@@ -13,7 +13,7 @@
 *****************************************************************************************************/
 
 /** Own headers */
-#include "SchM_Tasks.h"
+#include "Os_Task.h"
 /** Used modules */
 
 /*****************************************************************************************************
@@ -47,7 +47,7 @@
 * \param    void
 * \return   void   
 */
-void SchM_Task_1ms(void)
+TASK(Task_1ms)
 {
     static u16 time = 0;
     
@@ -67,7 +67,7 @@ void SchM_Task_1ms(void)
 * \param    void
 * \return   void   
 */
-void SchM_Task_4ms(void)
+TASK(Task_4ms)
 {
     static u16 time = 0;
     
@@ -86,7 +86,7 @@ void SchM_Task_4ms(void)
 * \param    void
 * \return   void   
 */
-void SchM_Task_8ms(void)
+TASK(Task_8ms)
 {
     static u16 time = 0;
     
@@ -105,7 +105,7 @@ void SchM_Task_8ms(void)
 * \param    void
 * \return   void   
 */
-void SchM_Task_16ms(void)
+TASK(Task_16ms)
 {
     static u16 time = 0;
     
@@ -124,9 +124,9 @@ void SchM_Task_16ms(void)
 * \param    void
 * \return   void   
 */
-void SchM_Task_32ms(void)
+TASK(Task_32ms)
 {
-    
+    ;    
 }
 /****************************************************************************************************/
 /****************************************************************************************************/
@@ -136,27 +136,10 @@ void SchM_Task_32ms(void)
 * \param    void
 * \return   void   
 */
-void SchM_Task_64ms(void)
+TASK(Task_64ms)
 {
-    
+    ;    
 }
 /****************************************************************************************************/
 
-/****************************************************************************************************/
-/**
-* \brief    Scheduler Background task
-* \author   Gerardo Valdovinos
-* \param    void
-* \return   void     
-*/
-void SchM_Background(void)
-{
-    /* Loop forever */
-    for(;;) 
-    {
-        PORTA_PA4 = 1;
-         
-        _FEED_COP();    /* feeds the dog */
-    }                   /* loop forever */    
-}
-/****************************************************************************************************/
+

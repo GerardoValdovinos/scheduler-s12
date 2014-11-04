@@ -19,11 +19,18 @@
 /*****************************************************************************************************
 * Definition of module wide VARIABLEs 
 *****************************************************************************************************/
-//tstSchM_Task* pstSchM_Task;
-const tstSchM_TaskCfg* pstSchM_TaskCfg;
+
+const tstOs_TaskCfg* pstOs_TaskCfg;     // Pointer to task array configuration
+const tstOs_Task* pstOs_Task;           // Pointer to task configuration
+
+/* This array and TCB should be created dinamically in Memory */
+tstTCB_Task astTCB_Task[4];             // Number of tasks defined in astOs_Task[]
+tstTCB* stTCB;                          // Pointer to Task Control Block
+
 /*****************************************************************************************************
 * Declaration of module wide FUNCTIONs 
 *****************************************************************************************************/
+void SchM_Background(void);
 
 /*****************************************************************************************************
 * Definition of module wide MACROs / #DEFINE-CONSTANTs 
@@ -48,9 +55,22 @@ const tstSchM_TaskCfg* pstSchM_TaskCfg;
 * \param    void
 * \return   void     
 */
-void SchM_Init(const tstSchM_TaskCfg* SchM_TaskCfg)
+void SchM_Init(const tstOs_TaskCfg* Os_TaskCfg)
 {
-    pstSchM_TaskCfg = SchM_TaskCfg;       
+    u8 u8Index;
+    
+    /* Copy pointer */
+    pstOs_TaskCfg = Os_TaskCfg;
+    
+    pstOs_Task = (tstOs_Task*)pstOs_TaskCfg->pstOs_Task;
+    
+    /* Extract all tasks */
+    for(u8Index = 0; u8Index < Os_TaskCfg->u8NumberOfTasks; u8Index++)
+    {
+        astTCB_Task[u8Index].eTCB_Priority = pstOs_Task[u8Index].ePriority;
+        astTCB_Task[u8Index].eTCB_TaskID = pstOs_Task[u8Index].eTaskID;
+        astTCB_Task[u8Index].u8TCB_State = 0;// SUSPENDED          
+    }
 }
 /****************************************************************************************************/
 
@@ -63,7 +83,7 @@ void SchM_Init(const tstSchM_TaskCfg* SchM_TaskCfg)
 */
 void SchM_DeInit(void)
 {
-    pstSchM_TaskCfg = NULL;    
+    pstOs_TaskCfg = NULL;    
 }
 /****************************************************************************************************/
 
@@ -106,11 +126,11 @@ void SchM_OsTick(void)
     u8OsTick++;
     
     /* Search an available task to execute */
-    for(u8IndexTable = 0; u8IndexTable < pstSchM_TaskCfg->u8NumberOfTasks; u8IndexTable++)
+    for(u8IndexTable = 0; u8IndexTable < pstOs_TaskCfg->u8NumberOfTasks; u8IndexTable++)
     {
         /* Copy to local variables */
-        u8Mask = pstSchM_TaskCfg->pstSchM_Task[u8IndexTable].u8Mask;
-        u8Offset = pstSchM_TaskCfg->pstSchM_Task[u8IndexTable].u8Offset;
+        u8Mask = pstOs_TaskCfg->pstOs_Task[u8IndexTable].u8Mask;
+        u8Offset = pstOs_TaskCfg->pstOs_Task[u8IndexTable].u8Offset;
         
         /* Form the real mask (Mask + Offset) */
         u8MaskOffset = (u8Mask + u8Offset) & u8Mask;
@@ -122,7 +142,7 @@ void SchM_OsTick(void)
             /****************
              * Execute task *
              ****************/
-            pstSchM_TaskCfg->pstSchM_Task[u8IndexTable].vpCallback();
+            pstOs_TaskCfg->pstOs_Task[u8IndexTable].vpCallback();
             
             break;
         }
@@ -131,4 +151,37 @@ void SchM_OsTick(void)
 }
 /****************************************************************************************************/
 
+/****************************************************************************************************/
+/**
+* \brief    Scheduler Background task
+* \author   Gerardo Valdovinos
+* \param    void
+* \return   void     
+*/
+void SchM_Background(void)
+{
+    /* Loop forever */
+    for(;;) 
+    {
+        //PORTA_PA4 = 1;
+        
+        /* Call Dispatcher */
+        SchM_Dispatcher();
+         
+        _FEED_COP();    /* feeds the dog */
+    }                   /* loop forever */    
+}
+/****************************************************************************************************/
+
+/****************************************************************************************************/
+/**
+* \brief    Scheduler dispatcher 
+* \author   Gerardo Valdovinos
+* \param    void
+* \return   void     
+*/
+void SchM_Dispatcher(void)
+{
+
+}
 

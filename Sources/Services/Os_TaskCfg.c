@@ -1,10 +1,10 @@
 /*******************************************************************************/
 /**
-\file       main.c
-\brief      Main function.
+\file       Os_TaskCfg.c
+\brief      Operative System Task Configuration
 \author     Gerardo Valdovinos
 \version    1.0
-\date       8/10/2014
+\date       03/11/2014
 */
 /****************************************************************************************************/
 
@@ -13,7 +13,8 @@
 *****************************************************************************************************/
 
 /** Own headers */
-#include "main.h"
+#include "Os_TaskCfg.h"
+#include "Os_Task.h"
 /** Used modules */
 
 /*****************************************************************************************************
@@ -35,59 +36,44 @@
 /*****************************************************************************************************
 * Definition of module wide (CONST-) CONSTANTs 
 *****************************************************************************************************/
+const tstOs_Task astOs_Task[] =
+{
+    {
+        TASK0,              // Task ID
+        PRIORITY0,          // Priority
+        MASK_1ms,           // Mask
+        OFFSET0,            // Offset
+        Task_1ms            // Callback
+    },
+    {
+        TASK1,              // Task ID
+        PRIORITY1,          // Priority
+        MASK_4ms,           // Mask
+        OFFSET1,            // Offset
+        Task_4ms            // Callback
+    },  
+    {
+        TASK2,              // Task ID
+        PRIORITY2,          // Priority
+        MASK_8ms,           // Mask
+        OFFSET3,            // Offset
+        Task_8ms            // Callback
+    },
+    {
+        TASK3,              // Task ID
+        PRIORITY3,          // Priority
+        MASK_16ms,          // Mask
+        OFFSET7,            // Offset
+        Task_16ms           // Callback
+    }      
+};
+
+const tstOs_TaskCfg stOs_TaskCfg[] =
+{
+    sizeof(astOs_Task)/sizeof(astOs_Task[0]),
+    &astOs_Task[0]
+};
 
 /*****************************************************************************************************
 * Code of module wide FUNCTIONS
 ****************************************************************************************************/
-
-/****************************************************************************************************/
-/**
-* \brief    Main function
-* \author   Gerardo Valdovinos
-* \param    void 
-* \return   void
-*/
-void main(void) 
-{
-    /* Port Initialization */
-    Gpio_Init();
-       
-    /* Mcu Initialization */
-    Mcu_Init();
-    
-    /* Gpt Initialization */
-    Gpt_Init(&stGpt_DriverCfg[0]);
- 
-    /* Scheduler Initialization */
-    SchM_Init(&stOs_TaskCfg[0]);
-       
-    EnableInterrupts;
-
-    /* Scheduler start. Never get back */
-    SchM_Start();
-
-}
-/****************************************************************************************************/
-
-/****************************************************************************************************/
-/**
-* \brief    Gpio Initialization
-* \author   Gerardo Valdovinos
-* \param    void 
-* \return   void
-*/
-void Gpio_Init(void)
-{
-    /* Data Port A initialization */
-    PORTA = 0x00u;
-    /* Data Direction Register Setup */
-    DDRA =  0xFFu;
-    /* Data Direction Register Setup for Port P */
-    DDRP =  0x00;    
-}
-
-
-
-
-
-
