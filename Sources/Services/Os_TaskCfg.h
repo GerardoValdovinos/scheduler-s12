@@ -73,7 +73,8 @@ typedef enum
 #define OFFSET6         (6)
 #define OFFSET7         (7)
 #define OFFSET8         (8)
- 
+
+/* Configuration typedefs */ 
 typedef struct
 {
     teTaskID                eTaskID;            // Task ID
@@ -88,6 +89,35 @@ typedef struct
     u8                      u8NumberOfTasks;    // Number of tasks
     const tstOs_Task*       pstOs_Task;         // Pointer to a task configuration
 }tstOs_TaskCfg;
+
+/* Status typedefs */
+typedef struct
+{
+    teTaskID                eTCB_TaskID;            // Task ID
+    tePriority              eTCB_Priority;          // Task priority
+    u8                      u8TCB_State;            // Task state  
+}tstTCB_Task;
+
+typedef struct
+{
+    u8                      u8TCB_NumberOfTasks;    // Number of tasks
+    tstTCB_Task*            pstTCB_Task;            // Pointer to task
+}tstTCB;
+
+/* Priority buffer typedefs */
+typedef struct
+{
+    u8                      u8Priority;
+    u8                      u8Index;
+    u8                      u8Size;
+    u8                      au8Buffer[5];  
+}tstQueue;
+
+typedef struct
+{
+    u8                      u8NumberOfQueues;
+    tstQueue*               pstQueue;
+}tstQueueBuffer;
 
 /*-- Function Prototypes -----------------------------------------------------*/
 

@@ -29,16 +29,21 @@
 /*****************************************************************************************************
 * Definition of module wide MACROs / #DEFINE-CONSTANTs
 *****************************************************************************************************/
-typedef u16 TaskType;
-typedef TaskType* TaskRefType;
-typedef u8 TaskStateType;
-typedef TaskStateType* TaskStateRefType;
+typedef u16             TaskType;
+typedef TaskType*       TaskRefType;
+typedef u8              TaskStateType;
+typedef TaskStateType*  TaskStateRefType;
 
 #ifndef TASK
 #define TASK(taskID)        void taskID(void)
 #endif
 
 #define DeclareTask(taskID) extern TASK(taskID)
+
+#define SUSPENDED       1
+#define READY           2
+#define RUNNING         3
+
 /*-- Macros ------------------------------------------------------------------*/
 typedef enum
 {

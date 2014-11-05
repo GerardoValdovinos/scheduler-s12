@@ -23,9 +23,13 @@
 const tstOs_TaskCfg* pstOs_TaskCfg;     // Pointer to task array configuration
 const tstOs_Task* pstOs_Task;           // Pointer to task configuration
 
-/* This array and TCB should be created dinamically in Memory */
+/* This TCB should be created dinamically in Memory */
 tstTCB_Task astTCB_Task[4];             // Number of tasks defined in astOs_Task[]
-tstTCB* stTCB;                          // Pointer to Task Control Block
+tstTCB* pstTCB;                         // Pointer to Task Control Block
+
+/* This Queue buffer should be created dinamically in Memory */
+tstQueue astQueue[4];                    // Diferent priorities of tasks
+tstQueueBuffer* stQueueBuffer;          // Pointer to Queue Buffer 
 
 /*****************************************************************************************************
 * Declaration of module wide FUNCTIONs 
@@ -59,18 +63,37 @@ void SchM_Init(const tstOs_TaskCfg* Os_TaskCfg)
 {
     u8 u8Index;
     
-    /* Copy pointer */
+    /* Copy tasks configuration pointer */
     pstOs_TaskCfg = Os_TaskCfg;
     
+    /* Copy task pointer */
     pstOs_Task = (tstOs_Task*)pstOs_TaskCfg->pstOs_Task;
     
     /* Extract all tasks */
-    for(u8Index = 0; u8Index < Os_TaskCfg->u8NumberOfTasks; u8Index++)
+    for(u8Index = 0; u8Index < pstOs_TaskCfg->u8NumberOfTasks; u8Index++)
     {
+        /* Initialize Task Control Block */
         astTCB_Task[u8Index].eTCB_Priority = pstOs_Task[u8Index].ePriority;
         astTCB_Task[u8Index].eTCB_TaskID = pstOs_Task[u8Index].eTaskID;
-        astTCB_Task[u8Index].u8TCB_State = 0;// SUSPENDED          
+        astTCB_Task[u8Index].u8TCB_State = SUSPENDED;
+        
+        /* Initialize Queue buffer */
+        astQueue[u8Index].u8Priority = u8Index;
+        astQueue[u8Index].u8Index = 0;
+        astQueue[u8Index].u8Size = sizeof(astQueue[u8Index].au8Buffer);          
     }
+    
+    /* Copy configuration to a TCB pointer*/
+    pstTCB->pstTCB_Task = (tstTCB_Task*) &astTCB_Task[0];
+    pstTCB->u8TCB_NumberOfTasks = pstOs_TaskCfg->u8NumberOfTasks;
+    
+    /* Copy configuration to a Queue buffer pointer */
+    stQueueBuffer->pstQueue = (tstQueue*) &astQueue[0];
+    stQueueBuffer->u8NumberOfQueues = pstOs_TaskCfg->u8NumberOfTasks; 
+    
+    /* Operative system initialization */
+    Os_Init(pstTCB);
+    
 }
 /****************************************************************************************************/
 

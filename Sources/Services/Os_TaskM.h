@@ -18,7 +18,7 @@
 /*****************************************************************************************************
 * Include files
 *****************************************************************************************************/
-#include "Os_Types.h"
+#include "Os_TaskCfg.h"
 
 /*****************************************************************************************************
 * Definition of module wide VARIABLES
@@ -32,7 +32,8 @@
 
 
 /*-- Function Prototypes -----------------------------------------------------*/
-void Os_ActivateTask(void);
+void Os_Init(tstTCB* pTCB);
+eOsStatus Os_ActivateTask(TaskType taskID);
 void Os_TerminateTask(void);
 void Os_GetTaskID(void);
 void Os_GetTaskState(void);

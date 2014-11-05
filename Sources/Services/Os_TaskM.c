@@ -16,11 +16,12 @@
 #include "Os_TaskM.h"
 
 /** Used modules */
+//#include "SchM.h"
 
 /*****************************************************************************************************
 * Definition of module wide VARIABLEs 
 *****************************************************************************************************/
-
+tstTCB* pstOs_TCB;
 /*****************************************************************************************************
 * Declaration of module wide FUNCTIONs 
 *****************************************************************************************************/
@@ -43,14 +44,42 @@
 
 /****************************************************************************************************/
 /**
+* \brief    Operative system initialization
+* \author   Gerardo Valdovinos
+* \param    void
+* \return   void     
+*/
+void Os_Init(tstTCB* pTCB)
+{
+    pstOs_TCB = pTCB;    
+} 
+
+/****************************************************************************************************/
+/**
 * \brief    Activate Task
 * \author   Gerardo Valdovinos
 * \param    void
 * \return   void     
 */
-void Os_ActivateTask(void)
+eOsStatus Os_ActivateTask(TaskType taskID)
 {
-    
+    if(taskID < pstOs_TCB->u8TCB_NumberOfTasks)
+    {
+        /* Change task state to Ready */
+        pstOs_TCB->pstTCB_Task[taskID].u8TCB_State = READY;
+        
+        /* Put task in corresponding priority buffer */
+        // TODO: hacer el buffer
+        
+        /* Service executed without error */
+        return E_OK;
+    }
+    else
+    {
+        /* Not valid task */
+        return E_OS_ID;    
+    }
+       
 }
 
 /****************************************************************************************************/

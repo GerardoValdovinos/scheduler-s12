@@ -35,6 +35,7 @@
 *****************************************************************************************************/
 
 /*-- Macros ------------------------------------------------------------------*/
+/*
 typedef struct
 {
     teTaskID                eTCB_TaskID;            // Task ID
@@ -47,7 +48,7 @@ typedef struct
     u8                      u8TCB_NumberOfTasks;    // Number of tasks
     tstTCB_Task*            pstTCB_Task;            // Pointer to task
 }tstTCB;
-
+*/
 /*-- Function Prototypes -----------------------------------------------------*/
 void SchM_Init(const tstOs_TaskCfg* Os_TaskCfg);
 void SchM_DeInit(void);
