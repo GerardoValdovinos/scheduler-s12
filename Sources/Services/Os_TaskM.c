@@ -22,6 +22,7 @@
 * Definition of module wide VARIABLEs 
 *****************************************************************************************************/
 tstTCB* pstOs_TCB;
+tstQueueBuffer* pstOs_QueueBuffer;
 /*****************************************************************************************************
 * Declaration of module wide FUNCTIONs 
 *****************************************************************************************************/
@@ -49,9 +50,11 @@ tstTCB* pstOs_TCB;
 * \param    void
 * \return   void     
 */
-void Os_Init(tstTCB* pTCB)
+void Os_Init(tstTCB* pTCB, tstQueueBuffer* pQueueBuffer)
 {
-    pstOs_TCB = pTCB;    
+    /* Copy to a global pointers */
+    pstOs_TCB = pTCB; 
+    pstOs_QueueBuffer = pQueueBuffer;   
 } 
 
 /****************************************************************************************************/
@@ -63,16 +66,51 @@ void Os_Init(tstTCB* pTCB)
 */
 eOsStatus Os_ActivateTask(TaskType taskID)
 {
-    if(taskID < pstOs_TCB->u8TCB_NumberOfTasks)
-    {
+    u8 u8Priority;
+    u8 u8Index;
+    u8 u8BufferSize;
+    u8 i;
+    
+    if(taskID < pstOs_QueueBuffer->u8NumberOfQueues)
+    {     
+        /* Get priority of the task */
+        u8Priority = (u8)pstOs_TCB->pstTCB_Task[taskID].eTCB_Priority;
+        
+        /* Get size of priority buffer */
+        u8BufferSize = pstOs_QueueBuffer->pstQueue[u8Priority].u8Size;   
+                     
+        /* Inside a priority buffer get the actual index */
+        u8Index = pstOs_QueueBuffer->pstQueue[u8Priority].u8Index;
+        
+        /* Search more than one activation of the task */
+        for(i = 0; i <= u8Index; i++)
+        {
+            if(pstOs_QueueBuffer->pstQueue[u8Priority].au8Buffer[i] == taskID)
+            {
+                /* Task already activated */
+                return E_OS_LIMIT;
+            }
+        }
+        
+        /*********************************************
+         * Put task in corresponding priority buffer *
+         *********************************************/
+             
+        /* Put task ID inside priority buffer and in corresponding index */
+        pstOs_QueueBuffer->pstQueue[u8Priority].au8Buffer[u8Index] = (u8)taskID; 
+    
         /* Change task state to Ready */
-        pstOs_TCB->pstTCB_Task[taskID].u8TCB_State = READY;
+        pstOs_TCB->pstTCB_Task[taskID].u8TCB_State = READY;            
         
-        /* Put task in corresponding priority buffer */
-        // TODO: hacer el buffer
-        
+        /* Increment buffer index */
+        if(u8Index < (u8BufferSize - 1))
+        {
+            pstOs_QueueBuffer->pstQueue[u8Priority].u8Index++;   
+        }
+
         /* Service executed without error */
-        return E_OK;
+        return E_OK;            
+
     }
     else
     {

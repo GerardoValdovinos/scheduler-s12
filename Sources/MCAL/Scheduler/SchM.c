@@ -25,11 +25,11 @@ const tstOs_Task* pstOs_Task;           // Pointer to task configuration
 
 /* This TCB should be created dinamically in Memory */
 tstTCB_Task astTCB_Task[4];             // Number of tasks defined in astOs_Task[]
-tstTCB* pstTCB;                         // Pointer to Task Control Block
+tstTCB stTCB;                          // Task Control Block
 
 /* This Queue buffer should be created dinamically in Memory */
-tstQueue astQueue[4];                    // Diferent priorities of tasks
-tstQueueBuffer* stQueueBuffer;          // Pointer to Queue Buffer 
+tstQueue astQueue[4];                   // Diferent priorities of tasks
+tstQueueBuffer stQueueBuffer;          // Queue Buffer 
 
 /*****************************************************************************************************
 * Declaration of module wide FUNCTIONs 
@@ -80,19 +80,22 @@ void SchM_Init(const tstOs_TaskCfg* Os_TaskCfg)
         /* Initialize Queue buffer */
         astQueue[u8Index].u8Priority = u8Index;
         astQueue[u8Index].u8Index = 0;
-        astQueue[u8Index].u8Size = sizeof(astQueue[u8Index].au8Buffer);          
+        astQueue[u8Index].u8Size = sizeof(astQueue[u8Index].au8Buffer); 
+        
+        /* Clear queue buffer (set to 0xFF */
+        (void)memset(&astQueue[u8Index].au8Buffer[0],0xFF, astQueue[u8Index].u8Size);         
     }
     
-    /* Copy configuration to a TCB pointer*/
-    pstTCB->pstTCB_Task = (tstTCB_Task*) &astTCB_Task[0];
-    pstTCB->u8TCB_NumberOfTasks = pstOs_TaskCfg->u8NumberOfTasks;
+    /* Copy configuration to a TCB pointer (status struct) */
+    stTCB.pstTCB_Task = (tstTCB_Task*) &astTCB_Task[0];
+    stTCB.u8TCB_NumberOfTasks = pstOs_TaskCfg->u8NumberOfTasks;
     
     /* Copy configuration to a Queue buffer pointer */
-    stQueueBuffer->pstQueue = (tstQueue*) &astQueue[0];
-    stQueueBuffer->u8NumberOfQueues = pstOs_TaskCfg->u8NumberOfTasks; 
+    stQueueBuffer.pstQueue = (tstQueue*) &astQueue[0];
+    stQueueBuffer.u8NumberOfQueues = pstOs_TaskCfg->u8NumberOfTasks; 
     
     /* Operative system initialization */
-    Os_Init(pstTCB);
+    Os_Init(&stTCB, &stQueueBuffer);
     
 }
 /****************************************************************************************************/
@@ -143,6 +146,8 @@ void SchM_OsTick(void)
     u8 u8MaskOffset;
     static u8 u8OsTick = 0;
     
+    TaskType TaskID;
+    
     /********************
      * Increment OsTick *
      ********************/
@@ -161,12 +166,12 @@ void SchM_OsTick(void)
         /* Verify match */
         if( (u8OsTick & u8Mask) == u8MaskOffset )
         {
+            TaskID = (TaskType)u8IndexTable;
         
-            /****************
-             * Execute task *
-             ****************/
-            pstOs_TaskCfg->pstOs_Task[u8IndexTable].vpCallback();
-            
+            /*****************
+             * Activate task *
+             *****************/
+            (void)Os_ActivateTask(TaskID);     
             break;
         }
     }

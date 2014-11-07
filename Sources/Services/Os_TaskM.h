@@ -32,7 +32,7 @@
 
 
 /*-- Function Prototypes -----------------------------------------------------*/
-void Os_Init(tstTCB* pTCB);
+void Os_Init(tstTCB* pTCB, tstQueueBuffer* pQueueBuffer);
 eOsStatus Os_ActivateTask(TaskType taskID);
 void Os_TerminateTask(void);
 void Os_GetTaskID(void);
