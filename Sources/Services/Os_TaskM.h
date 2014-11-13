@@ -23,7 +23,7 @@
 /*****************************************************************************************************
 * Definition of module wide VARIABLES
 *****************************************************************************************************/
-
+extern u8 gu8BUFFER_SIZE;                      // Variable of queue size
 /*****************************************************************************************************
 * Definition of module wide MACROs / #DEFINE-CONSTANTs
 *****************************************************************************************************/
@@ -33,10 +33,15 @@
 
 /*-- Function Prototypes -----------------------------------------------------*/
 void Os_Init(tstTCB* pTCB, tstQueueBuffer* pQueueBuffer);
+// Principal function
 eOsStatus Os_ActivateTask(TaskType taskID);
-void Os_TerminateTask(void);
-void Os_GetTaskID(void);
+eOsStatus Os_TerminateTask(void);
+eOsStatus Os_GetTaskID(TaskRefType Task);
 void Os_GetTaskState(void);
+
+// Internal function prototypes
+void PushToQueue(TaskType Task, tePriority ePriority);
+TaskType RetrieveFromQueue(tePriority ePriority);
 
 #endif /* __OS_TASKM_H */
 

@@ -25,11 +25,11 @@ const tstOs_Task* pstOs_Task;           // Pointer to task configuration
 
 /* This TCB should be created dinamically in Memory */
 tstTCB_Task astTCB_Task[4];             // Number of tasks defined in astOs_Task[]
-tstTCB stTCB;                          // Task Control Block
+tstTCB stTCB;                           // Task Control Block
 
 /* This Queue buffer should be created dinamically in Memory */
 tstQueue astQueue[4];                   // Diferent priorities of tasks
-tstQueueBuffer stQueueBuffer;          // Queue Buffer 
+tstQueueBuffer stQueueBuffer;           // Queue Buffer 
 
 /*****************************************************************************************************
 * Declaration of module wide FUNCTIONs 
@@ -62,34 +62,43 @@ void SchM_Background(void);
 void SchM_Init(const tstOs_TaskCfg* Os_TaskCfg)
 {
     u8 u8Index;
+    u8 PriorityIndex = 0;
     
     /* Copy tasks configuration pointer */
     pstOs_TaskCfg = Os_TaskCfg;
     
-    /* Copy task pointer */
-    pstOs_Task = (tstOs_Task*)pstOs_TaskCfg->pstOs_Task;
-    
-    /* Extract all tasks */
-    for(u8Index = 0; u8Index < pstOs_TaskCfg->u8NumberOfTasks; u8Index++)
+    if(pstOs_TaskCfg->u8NumberOfTasks)
     {
-        /* Initialize Task Control Block */
-        astTCB_Task[u8Index].eTCB_Priority = pstOs_Task[u8Index].ePriority;
-        astTCB_Task[u8Index].eTCB_TaskID = pstOs_Task[u8Index].eTaskID;
-        astTCB_Task[u8Index].u8TCB_State = SUSPENDED;
+        /* Copy task pointer */
+        pstOs_Task = (tstOs_Task*)pstOs_TaskCfg->pstOs_Task;
         
-        /* Initialize Queue buffer */
-        astQueue[u8Index].u8Priority = u8Index;
-        astQueue[u8Index].u8Index = 0;
-        astQueue[u8Index].u8Size = sizeof(astQueue[u8Index].au8Buffer); 
-        
-        /* Clear queue buffer (set to 0xFF */
-        (void)memset(&astQueue[u8Index].au8Buffer[0],0xFF, astQueue[u8Index].u8Size);         
+        /* Copy configuration to a TCB pointer (status struct) */
+        stTCB.pstTCB_Task = (tstTCB_Task*) &astTCB_Task[0];
+        stTCB.u8TCB_NumberOfTasks = pstOs_TaskCfg->u8NumberOfTasks;        
+    
+        /* Fill task control block */
+        for(u8Index = 0; u8Index < pstOs_TaskCfg->u8NumberOfTasks; u8Index++)
+        {
+            /* Initialize Task Control Block */
+            astTCB_Task[u8Index].eTCB_Priority = pstOs_Task[u8Index].ePriority;
+            astTCB_Task[u8Index].eTCB_TaskID = pstOs_Task[u8Index].eTaskID;
+            astTCB_Task[u8Index].u8TCB_State = SUSPENDED;            
+       
+        } 
+         
+        /* Initialize priority buffers */
+        for(u8Index = 0; u8Index < 4; u8Index++)  
+        {
+            astQueue[u8Index].ePriority = (tePriority)u8Index;
+            astQueue[u8Index].u8Start = 0;
+            astQueue[u8Index].u8End = 0;
+            astQueue[u8Index].u8Active = 0;    
+        }    
     }
-    
-    /* Copy configuration to a TCB pointer (status struct) */
-    stTCB.pstTCB_Task = (tstTCB_Task*) &astTCB_Task[0];
-    stTCB.u8TCB_NumberOfTasks = pstOs_TaskCfg->u8NumberOfTasks;
-    
+   
+    /* Copy to extern global variable */
+    gu8BUFFER_SIZE = sizeof(astQueue[u8Index].aeTaskBuffer);
+     
     /* Copy configuration to a Queue buffer pointer */
     stQueueBuffer.pstQueue = (tstQueue*) &astQueue[0];
     stQueueBuffer.u8NumberOfQueues = pstOs_TaskCfg->u8NumberOfTasks; 

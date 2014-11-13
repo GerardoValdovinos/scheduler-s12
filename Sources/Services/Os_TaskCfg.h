@@ -39,7 +39,9 @@ typedef enum
     TASK4,
     TASK5,
     TASK6,
-    TASK7    
+    TASK7,
+    
+    TASK_NULL    
 }teTaskID;
 
 typedef enum
@@ -52,7 +54,9 @@ typedef enum
     PRIORITY5,
     PRIORITY6,
     PRIORITY7,
-    PRIORITY8
+    PRIORITY8,
+    
+    PRIORITY_NULL
 }tePriority;
 
 #define MASK_1ms        (0b00000001)
@@ -107,10 +111,11 @@ typedef struct
 /* Priority buffer typedefs */
 typedef struct
 {
-    u8                      u8Priority;
-    u8                      u8Index;
-    u8                      u8Size;
-    u8                      au8Buffer[5];  
+    tePriority              ePriority;
+    u8                      u8Start;
+    u8                      u8End;
+    u8                      u8Active;
+    teTaskID                aeTaskBuffer[5];  
 }tstQueue;
 
 typedef struct
