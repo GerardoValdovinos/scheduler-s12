@@ -44,6 +44,8 @@ typedef enum
     TASK_NULL    
 }teTaskID;
 
+#define TASK_EMPTY      (0xFFFF)
+
 typedef enum
 {
     PRIORITY0 = 0,
@@ -81,7 +83,7 @@ typedef enum
 /* Configuration typedefs */ 
 typedef struct
 {
-    teTaskID                eTaskID;            // Task ID
+    TaskType                tTaskID;            // Task ID
     tePriority              ePriority;          // Task priority
     u8                      u8Mask;             // Mask of task
     u8                      u8Offset;           // Offset of task
@@ -97,9 +99,9 @@ typedef struct
 /* Status typedefs */
 typedef struct
 {
-    teTaskID                eTCB_TaskID;            // Task ID
+    TaskType                tTCB_TaskID;            // Task ID
     tePriority              eTCB_Priority;          // Task priority
-    u8                      u8TCB_State;            // Task state  
+    TaskStateType           tTCB_State;             // Task state  
 }tstTCB_Task;
 
 typedef struct
@@ -112,10 +114,8 @@ typedef struct
 typedef struct
 {
     tePriority              ePriority;
-    u8                      u8Start;
-    u8                      u8End;
-    u8                      u8Active;
-    teTaskID                aeTaskBuffer[5];  
+    u8                      u8Index;
+    TaskType                atTaskBuffer[5];  
 }tstQueue;
 
 typedef struct

@@ -28,6 +28,8 @@ tstQueueBuffer* pstOs_QueueBuffer;      // Pointer to Queue buffer
 tstQueue*       pstOs_Queue;            // Pointer to Queue
 
 u8 gu8BUFFER_SIZE;                      // Variable of queue size
+
+TaskType RunningTask;                   // Running task
 /*****************************************************************************************************
 * Declaration of module wide FUNCTIONs 
 *****************************************************************************************************/
@@ -70,11 +72,11 @@ void Os_Init(tstTCB* pTCB, tstQueueBuffer* pQueueBuffer)
 * \brief    Activate Task
 * \author   Gerardo Valdovinos
 * \param    void
-* \return   void     
+* \return   eOsStatus     
 */
 eOsStatus Os_ActivateTask(TaskType taskID)
 {   
-    if(taskID < pstOs_QueueBuffer->u8NumberOfQueues)
+    if(taskID < pstOs_TCB->u8TCB_NumberOfTasks)
     {            
         /*********************************************
          * Put task in corresponding priority buffer *
@@ -84,7 +86,7 @@ eOsStatus Os_ActivateTask(TaskType taskID)
         PushToQueue(taskID, pstOs_TCBTask[taskID].eTCB_Priority); 
     
         /* Change task state to Ready */
-        pstOs_TCBTask[taskID].u8TCB_State = READY;            
+        pstOs_TCBTask[taskID].tTCB_State = (TaskStateType)READY;            
 
         /* Service executed without error */
         return E_OK;            
@@ -103,25 +105,26 @@ eOsStatus Os_ActivateTask(TaskType taskID)
 * \brief    Terminate Task
 * \author   Gerardo Valdovinos
 * \param    void
-* \return   void     
+* \return   eOsStatus     
 */
 eOsStatus Os_TerminateTask(void)
 {
-    TaskRefType RunningTask = NULL;
-
     /* Get running task */
-    if(E_OK == (eOsStatus)Os_GetTaskID(RunningTask))
+    if(E_OK == (eOsStatus)Os_GetTaskID(&RunningTask))
     { 
         /* Change task state from Running to Suspended */
-        pstOs_TCBTask[*RunningTask].u8TCB_State = SUSPENDED;
+        pstOs_TCBTask[RunningTask].tTCB_State = (TaskStateType)SUSPENDED;
         
         /* Retrieve task from queue */
-        (void)RetrieveFromQueue(pstOs_TCBTask[*RunningTask].eTCB_Priority);
+        RetrieveFromQueue(pstOs_TCBTask[RunningTask].eTCB_Priority);
         
         return E_OK; 
         
     }
-    return E_OS_RESOURCE;        
+    else
+    {
+        return E_OS_RESOURCE;
+    }            
 }
 
 /****************************************************************************************************/
@@ -129,13 +132,28 @@ eOsStatus Os_TerminateTask(void)
 * \brief    Get Task ID
 * \author   Gerardo Valdovinos
 * \param    void
-* \return   void   
+* \return   eOsStatus   
 */
-eOsStatus Os_GetTaskID(TaskRefType Task)
+eOsStatus Os_GetTaskID(TaskRefType pTask)
 {
-    Task = NULL;
+    u8 u8Index;
     
-    return E_OK;    
+    /* Search for the running task */
+    for(u8Index = 0; u8Index < pstOs_TCB->u8TCB_NumberOfTasks; u8Index++)
+    {
+        if(pstOs_TCBTask[u8Index].tTCB_State == (TaskStateType)RUNNING)
+        {
+            /* Copy to local variables */           
+            *pTask = pstOs_TCBTask[u8Index].tTCB_TaskID;
+
+            return E_OK;
+        }
+        
+    }
+    /* There isn't a running task */
+    pTask = NULL;
+    
+    return E_OS_NOFUNC;           
 }
 
 /****************************************************************************************************/
@@ -143,11 +161,20 @@ eOsStatus Os_GetTaskID(TaskRefType Task)
 * \brief    Get Task state
 * \author   Gerardo Valdovinos
 * \param    void
-* \return   void    
+* \return   eOsStatus    
 */
-void Os_GetTaskState(void)
+eOsStatus Os_GetTaskState(TaskType taskID, TaskStateRefType stateRef)
 {
-    
+    if(taskID < pstOs_TCB->u8TCB_NumberOfTasks)
+    {
+        stateRef = (TaskStateRefType)&pstOs_TCBTask[taskID].tTCB_State;
+        
+        return E_OK;
+    }
+    else
+    {
+        return E_OS_ID;
+    }
 }
 
 /****************************************************************************************************/
@@ -157,29 +184,28 @@ void Os_GetTaskState(void)
 * \param    TaskType Task, tePriority ePriority
 * \return   void    
 */
-void PushToQueue(TaskType Task, tePriority ePriority)
+void PushToQueue(TaskType TaskID, tePriority ePriority)
 {
-    u8 start = pstOs_Queue[ePriority].u8Start;
-    u8 end = pstOs_Queue[ePriority].u8End;
-    u8 active = pstOs_Queue[ePriority].u8Active;
-
-    /* Push new Task ID */
-    pstOs_Queue[ePriority].aeTaskBuffer[end] = Task;
+    u8 i;   
+    u8 index = pstOs_Queue[ePriority].u8Index;
     
-    /* Increment end index */
-    end = (end + 1) % gu8BUFFER_SIZE;
-    pstOs_Queue[ePriority].u8End = end;
-
-    if (active < gu8BUFFER_SIZE)
+    if(index < gu8BUFFER_SIZE)
     {
-        active++;
-        pstOs_Queue[ePriority].u8Active = active;
-    } 
-    else 
-    {
-        /* Overwriting the oldest. Move start to next-oldest */
-        //start = (start + 1) % gu8BUFFER_SIZE;        
-        //pstOs_Queue[ePriority].u8Start = start;
+        for(i = 0; i <= index;i++)
+        {
+            if( pstOs_Queue[ePriority].atTaskBuffer[i] == TaskID)
+            {
+                break;
+            }
+            else if(pstOs_Queue[ePriority].atTaskBuffer[i] == TASK_EMPTY)
+            {
+                /* Push new Task ID */
+                pstOs_Queue[ePriority].atTaskBuffer[index] = TaskID;
+                
+                /* Incremente index */
+                pstOs_Queue[ePriority].u8Index++;                           
+            }
+        }
     }
 }
 
@@ -188,31 +214,28 @@ void PushToQueue(TaskType Task, tePriority ePriority)
 * \brief    Get Task state
 * \author   Gerardo Valdovinos
 * \param    tePriority ePriority
-* \return   TaskType    
+* \return   void    
 */
-TaskType RetrieveFromQueue(tePriority ePriority)
-{
-    TaskType Task;
+void RetrieveFromQueue(tePriority ePriority)
+{  
+    u8 i;
+    u8 index = pstOs_Queue[ePriority].u8Index;
     
-    u8 start = pstOs_Queue[ePriority].u8Start;
-    u8 end = pstOs_Queue[ePriority].u8End;
-    u8 active = pstOs_Queue[ePriority].u8Active;  
-
-    if (!active)
+    if( (index != 0) && (index <= gu8BUFFER_SIZE) )
     {
-        return TASK_NULL;
+        /* Shift to left priority buffer */    
+        for(i = 0; i < index; i++)
+        {
+            pstOs_Queue[ePriority].atTaskBuffer[i] = pstOs_Queue[ePriority].atTaskBuffer[i+1];  
+        }
+        
+        if(index == gu8BUFFER_SIZE)
+        {
+            pstOs_Queue[ePriority].atTaskBuffer[index - 1] = TASK_EMPTY;
+        }
+        
+        pstOs_Queue[ePriority].u8Index--;
     }
-
-    Task = pstOs_Queue[ePriority].aeTaskBuffer[start];
-    
-    /* Increment start index */
-    start = (start + 1) % gu8BUFFER_SIZE;
-    pstOs_Queue[ePriority].u8Start = start;
-    
-    active--;
-    pstOs_Queue[ePriority].u8Active = active;
-    
-    return Task;
 }
 
 /****************************************************************************************************/

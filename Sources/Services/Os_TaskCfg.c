@@ -39,28 +39,28 @@
 const tstOs_Task astOs_Task[] =
 {
     {
-        TASK0,              // Task ID
+        (TaskType)TASK0,              // Task ID
         PRIORITY0,          // Priority
         MASK_1ms,           // Mask
         OFFSET0,            // Offset
         Task_1ms            // Callback
     },
     {
-        TASK1,              // Task ID
+        (TaskType)TASK1,              // Task ID
         PRIORITY0,          // Priority
         MASK_4ms,           // Mask
         OFFSET1,            // Offset
         Task_4ms            // Callback
     },  
     {
-        TASK2,              // Task ID
+        (TaskType)TASK2,              // Task ID
         PRIORITY1,          // Priority
         MASK_8ms,           // Mask
         OFFSET3,            // Offset
         Task_8ms            // Callback
     },
     {
-        TASK3,              // Task ID
+        (TaskType)TASK3,              // Task ID
         PRIORITY1,          // Priority
         MASK_16ms,          // Mask
         OFFSET7,            // Offset

@@ -28,7 +28,7 @@ tstTCB_Task astTCB_Task[4];             // Number of tasks defined in astOs_Task
 tstTCB stTCB;                           // Task Control Block
 
 /* This Queue buffer should be created dinamically in Memory */
-tstQueue astQueue[4];                   // Diferent priorities of tasks
+tstQueue astQueue[2];                   // Diferent priorities of tasks
 tstQueueBuffer stQueueBuffer;           // Queue Buffer 
 
 /*****************************************************************************************************
@@ -81,27 +81,28 @@ void SchM_Init(const tstOs_TaskCfg* Os_TaskCfg)
         {
             /* Initialize Task Control Block */
             astTCB_Task[u8Index].eTCB_Priority = pstOs_Task[u8Index].ePriority;
-            astTCB_Task[u8Index].eTCB_TaskID = pstOs_Task[u8Index].eTaskID;
-            astTCB_Task[u8Index].u8TCB_State = SUSPENDED;            
+            astTCB_Task[u8Index].tTCB_TaskID = pstOs_Task[u8Index].tTaskID;
+            astTCB_Task[u8Index].tTCB_State = (TaskStateType)SUSPENDED;            
        
         } 
          
         /* Initialize priority buffers */
-        for(u8Index = 0; u8Index < 4; u8Index++)  
+        /* HARCODED. Se debieran revisar las prioridades que existen
+         * y luego crear los buffers */
+        for(u8Index = 0; u8Index < 2; u8Index++)  
         {
             astQueue[u8Index].ePriority = (tePriority)u8Index;
-            astQueue[u8Index].u8Start = 0;
-            astQueue[u8Index].u8End = 0;
-            astQueue[u8Index].u8Active = 0;    
+            astQueue[u8Index].u8Index = 0;
+            (void)memset(&astQueue[u8Index].atTaskBuffer[0],0xFF,10);    
         }    
     }
    
     /* Copy to extern global variable */
-    gu8BUFFER_SIZE = sizeof(astQueue[u8Index].aeTaskBuffer);
+    gu8BUFFER_SIZE = sizeof(astQueue[u8Index].atTaskBuffer)/2;
      
     /* Copy configuration to a Queue buffer pointer */
     stQueueBuffer.pstQueue = (tstQueue*) &astQueue[0];
-    stQueueBuffer.u8NumberOfQueues = pstOs_TaskCfg->u8NumberOfTasks; 
+    stQueueBuffer.u8NumberOfQueues = 2; // HARCODED. Solo hay dos prioridades 
     
     /* Operative system initialization */
     Os_Init(&stTCB, &stQueueBuffer);
@@ -118,7 +119,11 @@ void SchM_Init(const tstOs_TaskCfg* Os_TaskCfg)
 */
 void SchM_DeInit(void)
 {
-    pstOs_TaskCfg = NULL;    
+    pstOs_TaskCfg = NULL;
+    
+    /* De-initialize OsTick timer */
+    Gpt_DisableNotification(0);
+    Gpt_StopTimer(0);    
 }
 /****************************************************************************************************/
 
@@ -155,8 +160,6 @@ void SchM_OsTick(void)
     u8 u8MaskOffset;
     static u8 u8OsTick = 0;
     
-    TaskType TaskID;
-    
     /********************
      * Increment OsTick *
      ********************/
@@ -174,13 +177,11 @@ void SchM_OsTick(void)
         
         /* Verify match */
         if( (u8OsTick & u8Mask) == u8MaskOffset )
-        {
-            TaskID = (TaskType)u8IndexTable;
-        
+        {       
             /*****************
              * Activate task *
              *****************/
-            (void)Os_ActivateTask(TaskID);     
+            (void)Os_ActivateTask(astTCB_Task[u8IndexTable].tTCB_TaskID);     
             break;
         }
     }
@@ -212,13 +213,33 @@ void SchM_Background(void)
 
 /****************************************************************************************************/
 /**
-* \brief    Scheduler dispatcher 
+* \brief    Scheduler dispatcher. Priority 0 is higher. 
 * \author   Gerardo Valdovinos
 * \param    void
 * \return   void     
 */
 void SchM_Dispatcher(void)
 {
-
+    u8 u8QueueIndex;
+    TaskType TaskID;
+    
+    for(u8QueueIndex = 0; u8QueueIndex < stQueueBuffer.u8NumberOfQueues; u8QueueIndex++)
+    {
+        if(astQueue[u8QueueIndex].u8Index)
+        {
+            /* Copy taskID from priority buffer */
+            TaskID = (TaskType)astQueue[u8QueueIndex].atTaskBuffer[0];
+            
+            /* Set task state to running */
+            astTCB_Task[TaskID].tTCB_State = (TaskStateType)RUNNING;
+            
+            /****************
+             * Execute Task *
+             ****************/
+            pstOs_Task[TaskID].vpCallback();
+            
+            break;
+        }
+    }
 }
 

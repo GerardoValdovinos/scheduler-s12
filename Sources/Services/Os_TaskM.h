@@ -33,15 +33,16 @@ extern u8 gu8BUFFER_SIZE;                      // Variable of queue size
 
 /*-- Function Prototypes -----------------------------------------------------*/
 void Os_Init(tstTCB* pTCB, tstQueueBuffer* pQueueBuffer);
+
 // Principal function
 eOsStatus Os_ActivateTask(TaskType taskID);
 eOsStatus Os_TerminateTask(void);
 eOsStatus Os_GetTaskID(TaskRefType Task);
-void Os_GetTaskState(void);
+eOsStatus Os_GetTaskState(TaskType taskID, TaskStateRefType stateRef);
 
 // Internal function prototypes
 void PushToQueue(TaskType Task, tePriority ePriority);
-TaskType RetrieveFromQueue(tePriority ePriority);
+void RetrieveFromQueue(tePriority ePriority);
 
 #endif /* __OS_TASKM_H */
 
