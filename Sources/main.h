@@ -22,7 +22,7 @@
 #include "Mcu.h"
 #include "Gpt.h"
 #include "SchM.h"
-
+#include "Ect.h"
 
 /*****************************************************************************************************
 * Definition of module wide VARIABLES

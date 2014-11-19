@@ -1,25 +1,25 @@
 /****************************************************************************************************/
 /**
 
-\file       Isr.h
-\brief      Variable types and common macros
+\file       Ect.h
+\brief      Enhanced Capture Timer
 \author     Gerardo Valdovinos
 \version    1.0
-\date       08/10/2014
+\date       18/11/2014
 */
 /****************************************************************************************************/
 
 /****************************************************************************************************/
 
-#ifndef __ISR_H
-#define __ISR_H
+#ifndef __ECT_H
+#define __ECT_H
 
 
 /*****************************************************************************************************
 * Include files
 *****************************************************************************************************/
-#include "Gpt.h"
-#include "Ect.h"
+#include "Ect_Cfg.h"
+    
 /*****************************************************************************************************
 * Definition of module wide VARIABLES
 *****************************************************************************************************/
@@ -32,10 +32,16 @@
 
 
 /*-- Function Prototypes -----------------------------------------------------*/
-#pragma CODE_SEG __NEAR_SEG NON_BANKED
-void interrupt  vfnDummy_D_Isr( void  );
-#pragma CODE_SEG DEFAULT
+void Ect_Init(void);
+void Ect_Start(void);
 
-#endif /* __ISR_H */
+/** ECT Channel 0 ISR --> Main CPU  */
+#pragma CODE_SEG __NEAR_SEG NON_BANKED
+
+void interrupt  vfnECT_Channel0_Isr(void);
+
+#pragma CODE_SEG DEFAULT 
+
+#endif /* __ECT_H */
 
 /*******************************************************************************/

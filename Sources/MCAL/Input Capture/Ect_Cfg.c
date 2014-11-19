@@ -1,10 +1,10 @@
 /*******************************************************************************/
 /**
-\file       main.c
-\brief      Main function.
+\file       Ect_Cfg.c
+\brief      Enhanced Capture Timer configuration
 \author     Gerardo Valdovinos
 \version    1.0
-\date       8/10/2014
+\date       18/11/2014
 */
 /****************************************************************************************************/
 
@@ -13,7 +13,8 @@
 *****************************************************************************************************/
 
 /** Own headers */
-#include "main.h"
+#include "Ect_Cfg.h"
+
 /** Used modules */
 
 /*****************************************************************************************************
@@ -42,55 +43,11 @@
 
 /****************************************************************************************************/
 /**
-* \brief    Main function
+* \brief    
 * \author   Gerardo Valdovinos
-* \param    void 
+* \param    void
 * \return   void
+* \Notes:   We take this code from Abrahams example =)     
 */
-void main(void) 
-{
-    /* Port Initialization */
-    Gpio_Init();
-       
-    /* Mcu Initialization */
-    Mcu_Init();
-    
-    /* Gpt Initialization */
-    Gpt_Init(&stGpt_DriverCfg[0]);
-    
-    /* Ect Initialization */
-    Ect_Init();
- 
-    /* Scheduler Initialization */
-    SchM_Init(&stOs_TaskCfg[0]);
-       
-    EnableInterrupts;
-
-    /* Scheduler start. Never get back */
-    SchM_Start();
-
-}
-/****************************************************************************************************/
 
 /****************************************************************************************************/
-/**
-* \brief    Gpio Initialization
-* \author   Gerardo Valdovinos
-* \param    void 
-* \return   void
-*/
-void Gpio_Init(void)
-{
-    /* Data Port A initialization */
-    PORTA = 0x00u;
-    /* Data Direction Register Setup */
-    DDRA =  0xFFu;
-    /* Data Direction Register Setup for Port P */
-    DDRP =  0x00;    
-}
-
-
-
-
-
-

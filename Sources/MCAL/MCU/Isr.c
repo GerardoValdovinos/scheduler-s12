@@ -153,7 +153,7 @@ void (* near const vectors[])(void) @ 0xFF10 =
   vfnDummy_D_Isr,          /* 0x74  0xFFE8 ivVtimch3       */
   vfnDummy_D_Isr,          /* 0x75  0xFFEA ivVtimch2       */
   vfnDummy_D_Isr,          /* 0x76  0xFFEC ivVtimch1       */
-  vfnDummy_D_Isr,          /* 0x77  0xFFEE ivVtimch0       */
+  vfnECT_Channel0_Isr,     /* 0x77  0xFFEE ivVtimch0       */
   vfnDummy_D_Isr,          /* 0x78  0xFFF0 ivVrti          */
   vfnDummy_D_Isr,          /* 0x79  0xFFF2 ivVirq          */
   vfnDummy_D_Isr,          /* 0x7A  0xFFF4 ivVxirq         */
