@@ -20,7 +20,7 @@
 /*****************************************************************************************************
 * Definition of module wide VARIABLEs 
 *****************************************************************************************************/
-
+u16 u16PulseTime;
 /*****************************************************************************************************
 * Declaration of module wide FUNCTIONs 
 *****************************************************************************************************/
@@ -92,7 +92,21 @@ void Ect_Start(void)
 */
 void interrupt  vfnECT_Channel0_Isr( void )
 {
-    ;
+    u16 u16TimeTC0;
+    u16 u16TimeTC0H;
+
+    u16TimeTC0 = ECT_TC0;
+    u16TimeTC0H = ECT_TC0H;
+    
+    if(u16TimeTC0 > u16TimeTC0H)
+    {
+        u16PulseTime = u16TimeTC0 - u16TimeTC0H;     
+    }
+    else
+    {
+        
+        u16PulseTime = (0xFFFF - u16TimeTC0H) + u16TimeTC0; 
+    }
 }
 
 #pragma CODE_SEG DEFAULT

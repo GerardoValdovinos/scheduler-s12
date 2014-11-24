@@ -14,12 +14,18 @@
 
 /** Own headers */
 #include "Os_Task.h"
+#include "fixmath.h"
 /** Used modules */
 
 /*****************************************************************************************************
 * Definition of module wide VARIABLEs 
 *****************************************************************************************************/
-
+fix16_t P;
+fix16_t a;
+fix16_t b;
+fix16_t c;
+fix16_t d;
+fix16_t e;
 /*****************************************************************************************************
 * Declaration of module wide FUNCTIONs 
 *****************************************************************************************************/
@@ -50,6 +56,14 @@
 TASK(Task_1ms)
 {
     static u16 time = 0;
+
+    a = fix16_from_float(10.235);
+    b = fix16_from_float(2.568);
+    c = fix16_add(a , b);
+    
+    d = fix16_mul(a,b);
+
+    e = fix16_div(a,b);
     
     time++;
     if(time >= 400)
@@ -121,6 +135,8 @@ TASK(Task_16ms)
         PORTA_PA3 ^= 1; 
         time = 0;
     } 
+    
+    
     
     (void)Os_TerminateTask();     
 }

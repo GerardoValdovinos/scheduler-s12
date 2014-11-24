@@ -14,6 +14,7 @@
 
 /** Own headers */
 #include "main.h"
+//#include "fix16.h"
 /** Used modules */
 
 /*****************************************************************************************************
@@ -48,7 +49,7 @@
 * \return   void
 */
 void main(void) 
-{
+{ 
     /* Port Initialization */
     Gpio_Init();
        
@@ -63,8 +64,12 @@ void main(void)
  
     /* Scheduler Initialization */
     SchM_Init(&stOs_TaskCfg[0]);
-       
+    
+    /* Enable Interrupts */   
     EnableInterrupts;
+
+    /* Input Capture start */
+    Ect_Start();
 
     /* Scheduler start. Never get back */
     SchM_Start();
@@ -86,7 +91,11 @@ void Gpio_Init(void)
     /* Data Direction Register Setup */
     DDRA =  0xFFu;
     /* Data Direction Register Setup for Port P */
-    DDRP =  0x00;    
+    DDRP =  0x00; 
+    
+    // Solo para pruebas. Activacion del pull-up del puerto T
+    DDRT = 0x00;
+    PERT_PERT0 = 1;  
 }
 
 
