@@ -1,10 +1,10 @@
 /*******************************************************************************/
 /**
-\file       main.c
-\brief      Main function.
+\file       Mem_Cfg.c
+\brief      Dinamic memory allocation configuration
 \author     Gerardo Valdovinos
 \version    1.0
-\date       8/10/2014
+\date       02/12/2014
 */
 /****************************************************************************************************/
 
@@ -13,12 +13,28 @@
 *****************************************************************************************************/
 
 /** Own headers */
-#include "main.h"
+#include "Mem_Cfg.h"
+
 /** Used modules */
 
 /*****************************************************************************************************
 * Definition of module wide VARIABLEs 
 *****************************************************************************************************/
+
+const tstRamPage stRamPage[] =
+{
+    {
+        RAM_FF,         // Ram page ID
+        (u8*)0x3000,    // Start address      
+        (u8*)0x3FFF     // End address
+    }
+};
+
+const tstMemAlloc stMemAlloc =
+{
+    sizeof(stRamPage)/sizeof(stRamPage[0]),     // Number of Ram pages
+    &stRamPage[0]                               // Pointer to Ram page array   
+};
 
 /*****************************************************************************************************
 * Declaration of module wide FUNCTIONs 
@@ -42,63 +58,11 @@
 
 /****************************************************************************************************/
 /**
-* \brief    Main function
+* \brief    
 * \author   Gerardo Valdovinos
-* \param    void 
+* \param    void
 * \return   void
+* \Notes:   We take this code from Abrahams example =)     
 */
-void main(void) 
-{ 
-    /* Port Initialization */
-    Gpio_Init();
-       
-    /* Mcu Initialization */
-    Mcu_Init();
-    
-    /* Gpt Initialization */
-    Gpt_Init(&stGpt_DriverCfg[0]);
-    
-    /* Ect Initialization */
-    Ect_Init();
- 
-    /* Scheduler Initialization */
-    SchM_Init(&stOs_TaskCfg[0]);
-    
-    /* Enable Interrupts */   
-    EnableInterrupts;
-
-    /* Input Capture start */
-    Ect_Start();
-
-    /* Scheduler start. Never get back */
-    SchM_Start();
-
-}
-/****************************************************************************************************/
 
 /****************************************************************************************************/
-/**
-* \brief    Gpio Initialization
-* \author   Gerardo Valdovinos
-* \param    void 
-* \return   void
-*/
-void Gpio_Init(void)
-{
-    /* Data Port A initialization */
-    PORTA = 0x00u;
-    /* Data Direction Register Setup */
-    DDRA =  0xFFu;
-    /* Data Direction Register Setup for Port P */
-    DDRP =  0x00; 
-    
-    // Solo para pruebas. Activacion del pull-up del puerto T
-    DDRT = 0x00;
-    PERT_PERT0 = 1;  
-}
-
-
-
-
-
-

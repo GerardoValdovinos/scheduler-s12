@@ -1,27 +1,26 @@
 /****************************************************************************************************/
 /**
 
-\file       Os_Task.h
-\brief      Operative System Module Tasks
+\file       Control.h
+\brief      Control of Pendubot
 \author     Gerardo Valdovinos
 \version    1.0
-\date       03/11/2014
+\date       25/11/2014
 */
 /****************************************************************************************************/
 
 /****************************************************************************************************/
 
-#ifndef __OS_TASK_H
-#define __OS_TASK_H
+#ifndef __CONTROL_H
+#define __CONTROL_H
 
 
 /*****************************************************************************************************
 * Include files
 *****************************************************************************************************/
-#include "Os_Types.h"
-#include "Os_TaskM.h"
-
-#include "Control.h"
+#include <hidef.h>          /* common defines and macros */
+#include "derivative.h"     /* derivative-specific definitions */
+#include "Typedefs.h"
 /*****************************************************************************************************
 * Definition of module wide VARIABLES
 *****************************************************************************************************/
@@ -34,13 +33,9 @@
 
 
 /*-- Function Prototypes -----------------------------------------------------*/
-DeclareTask(Task_1ms);
-DeclareTask(Task_4ms);
-DeclareTask(Task_8ms);
-DeclareTask(Task_16ms);
-DeclareTask(Task_32ms);
-DeclareTask(Task_64ms);
+void vfnCtrl_Pendubot(void);
 
-#endif /* __OS_TASK_H */
+
+#endif /* __CONTROL_H */
 
 /*******************************************************************************/

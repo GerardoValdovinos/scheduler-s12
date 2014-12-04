@@ -1,10 +1,10 @@
 /*******************************************************************************/
 /**
-\file       main.c
-\brief      Main function.
+\file       Control.c
+\brief      Control of Pendubot
 \author     Gerardo Valdovinos
 \version    1.0
-\date       8/10/2014
+\date       25/11/2014
 */
 /****************************************************************************************************/
 
@@ -13,13 +13,16 @@
 *****************************************************************************************************/
 
 /** Own headers */
-#include "main.h"
+#include "Control.h"
+#include "fixmath.h"
 /** Used modules */
 
 /*****************************************************************************************************
 * Definition of module wide VARIABLEs 
 *****************************************************************************************************/
+fix16_t fxPWM;
 
+volatile extern u16 u16PulseTime;
 /*****************************************************************************************************
 * Declaration of module wide FUNCTIONs 
 *****************************************************************************************************/
@@ -42,63 +45,14 @@
 
 /****************************************************************************************************/
 /**
-* \brief    Main function
+* \brief    Control of pendubot
 * \author   Gerardo Valdovinos
-* \param    void 
-* \return   void
+* \param    void
+* \return   void    
 */
-void main(void) 
-{ 
-    /* Port Initialization */
-    Gpio_Init();
-       
-    /* Mcu Initialization */
-    Mcu_Init();
-    
-    /* Gpt Initialization */
-    Gpt_Init(&stGpt_DriverCfg[0]);
-    
-    /* Ect Initialization */
-    Ect_Init();
- 
-    /* Scheduler Initialization */
-    SchM_Init(&stOs_TaskCfg[0]);
-    
-    /* Enable Interrupts */   
-    EnableInterrupts;
-
-    /* Input Capture start */
-    Ect_Start();
-
-    /* Scheduler start. Never get back */
-    SchM_Start();
-
-}
-/****************************************************************************************************/
-
-/****************************************************************************************************/
-/**
-* \brief    Gpio Initialization
-* \author   Gerardo Valdovinos
-* \param    void 
-* \return   void
-*/
-void Gpio_Init(void)
+void vfnCtrl_Pendubot(void)
 {
-    /* Data Port A initialization */
-    PORTA = 0x00u;
-    /* Data Direction Register Setup */
-    DDRA =  0xFFu;
-    /* Data Direction Register Setup for Port P */
-    DDRP =  0x00; 
-    
-    // Solo para pruebas. Activacion del pull-up del puerto T
-    DDRT = 0x00;
-    PERT_PERT0 = 1;  
+    fxPWM = fix16_from_float(3.16);
+    fxPWM += u16PulseTime;    
 }
-
-
-
-
-
-
+/****************************************************************************************************/

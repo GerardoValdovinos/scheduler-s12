@@ -1,10 +1,10 @@
 /*******************************************************************************/
 /**
-\file       main.c
-\brief      Main function.
+\file       Mem.c
+\brief      Dinamic memory allocation
 \author     Gerardo Valdovinos
 \version    1.0
-\date       8/10/2014
+\date       02/12/2014
 */
 /****************************************************************************************************/
 
@@ -13,13 +13,14 @@
 *****************************************************************************************************/
 
 /** Own headers */
-#include "main.h"
+#include "Mem.h"
+
 /** Used modules */
 
 /*****************************************************************************************************
 * Definition of module wide VARIABLEs 
 *****************************************************************************************************/
-
+tstMemAllocStatus stMemAllocStatus;
 /*****************************************************************************************************
 * Declaration of module wide FUNCTIONs 
 *****************************************************************************************************/
@@ -42,63 +43,39 @@
 
 /****************************************************************************************************/
 /**
-* \brief    Main function
+* \brief    
 * \author   Gerardo Valdovinos
-* \param    void 
-* \return   void
+* \param    void
+* \return   void     
 */
-void main(void) 
-{ 
-    /* Port Initialization */
-    Gpio_Init();
-       
-    /* Mcu Initialization */
-    Mcu_Init();
-    
-    /* Gpt Initialization */
-    Gpt_Init(&stGpt_DriverCfg[0]);
-    
-    /* Ect Initialization */
-    Ect_Init();
- 
-    /* Scheduler Initialization */
-    SchM_Init(&stOs_TaskCfg[0]);
-    
-    /* Enable Interrupts */   
-    EnableInterrupts;
-
-    /* Input Capture start */
-    Ect_Start();
-
-    /* Scheduler start. Never get back */
-    SchM_Start();
-
-}
-/****************************************************************************************************/
-
-/****************************************************************************************************/
-/**
-* \brief    Gpio Initialization
-* \author   Gerardo Valdovinos
-* \param    void 
-* \return   void
-*/
-void Gpio_Init(void)
+void vfnMem_Init(const tstMemAlloc* MemAlloc)
 {
-    /* Data Port A initialization */
-    PORTA = 0x00u;
-    /* Data Direction Register Setup */
-    DDRA =  0xFFu;
-    /* Data Direction Register Setup for Port P */
-    DDRP =  0x00; 
+    u8* pu8Start;
+    u8* pu8End;
+    u8 u8PageIndex;
     
-    // Solo para pruebas. Activacion del pull-up del puerto T
-    DDRT = 0x00;
-    PERT_PERT0 = 1;  
+    /* Verify if there are at least one Ram page */
+    if(MemAlloc->u8RamPages != 0)
+    {
+        /* Copy number of pages to status struct */
+        stMemAllocStatus.u8RamPages = MemAlloc->u8RamPages;
+        
+        for(u8PageIndex = 0;u8PageIndex < MemAlloc->u8RamPages; u8PageIndex++)
+        {
+            /* Copy to locar variables */
+            pu8Start = MemAlloc->pstRamPage[u8PageIndex].pu8Start;
+            pu8End = MemAlloc->pstRamPage[u8PageIndex].pu8End;
+            
+            /* Update all entries in status struct */
+            stMemAllocStatus.pstRamPageStatus[u8PageIndex].eRamPageID = MemAlloc->pstRamPage[u8PageIndex].eRamPageID;    
+            stMemAllocStatus.pstRamPageStatus[u8PageIndex].pu8Current = pu8Start;         
+            stMemAllocStatus.pstRamPageStatus[u8PageIndex].pu8End = pu8End;               
+            stMemAllocStatus.pstRamPageStatus[u8PageIndex].u16FreeBytes = (u16)(pu8End - pu8Start + 1); 
+            
+            /* Erase Ram in order to assure all entries are ready to be used */
+            vfnMem_Erase(pu8Start, stMemAllocStatus.pstRamPageStatus[u8PageIndex].u16FreeBytes)  
+        }
+    }
 }
 
-
-
-
-
-
+/****************************************************************************************************/

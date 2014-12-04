@@ -1,30 +1,43 @@
 /****************************************************************************************************/
 /**
 
-\file       Os_Task.h
-\brief      Operative System Module Tasks
+\file       Mem.h
+\brief      Dynamic memory allocation
 \author     Gerardo Valdovinos
 \version    1.0
-\date       03/11/2014
+\date       02/12/2014
 */
 /****************************************************************************************************/
 
 /****************************************************************************************************/
 
-#ifndef __OS_TASK_H
-#define __OS_TASK_H
+#ifndef __MEM_H
+#define __MEM_H
 
 
 /*****************************************************************************************************
 * Include files
 *****************************************************************************************************/
-#include "Os_Types.h"
-#include "Os_TaskM.h"
+#include "Mem_Cfg.h"
 
-#include "Control.h"
 /*****************************************************************************************************
 * Definition of module wide VARIABLES
 *****************************************************************************************************/
+
+/* Data type definitions for near memory */
+typedef struct 
+{
+    teRamPage           eRamPageID;     // Ram page ID
+    u8*                 pu8Current;     // Current address    
+    u8*                 pu8End;         // End address       
+    u16                 u16FreeBytes;   // Free bytes
+}tstRamPageStatus;
+
+typedef struct 
+{      
+    u8                          u8RamPages;         // Number of Ram pages
+    const tstRamPageStatus*     pstRamPageStatus;   // Pointer to Ram page array
+}tstMemAllocStatus;
 
 /*****************************************************************************************************
 * Definition of module wide MACROs / #DEFINE-CONSTANTs
@@ -34,13 +47,7 @@
 
 
 /*-- Function Prototypes -----------------------------------------------------*/
-DeclareTask(Task_1ms);
-DeclareTask(Task_4ms);
-DeclareTask(Task_8ms);
-DeclareTask(Task_16ms);
-DeclareTask(Task_32ms);
-DeclareTask(Task_64ms);
 
-#endif /* __OS_TASK_H */
+#endif /* __MEM_H */
 
 /*******************************************************************************/
