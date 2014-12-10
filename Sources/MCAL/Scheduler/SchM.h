@@ -21,6 +21,7 @@
 #include "Gpt.h"
 #include "Typedefs.h"
 #include "string.h"
+#include "Mem.h"
 
 /* OS includes*/
 #include "Os_TaskM.h"

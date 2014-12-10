@@ -81,8 +81,6 @@ void Ect_Start(void)
     ECT_TSCR1_TEN = 1;   
 }
 
-
-#pragma CODE_SEG __NEAR_SEG NON_BANKED
 /****************************************************************************************************/
 /**
 * \brief    ECT channel 0 interrupt
@@ -90,6 +88,7 @@ void Ect_Start(void)
 * \param    void 
 * \return   void
 */
+#pragma CODE_SEG __NEAR_SEG NON_BANKED
 void interrupt  vfnECT_Channel0_Isr( void )
 {
     u16 u16TimeTC0;

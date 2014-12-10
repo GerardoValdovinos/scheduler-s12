@@ -48,7 +48,7 @@
 * \return   void
 */
 void main(void) 
-{ 
+{    
     /* Port Initialization */
     Gpio_Init();
        
@@ -60,6 +60,9 @@ void main(void)
     
     /* Ect Initialization */
     Ect_Init();
+      
+    /* Memory allocation Initialization */
+    vfnMem_Init(&stMemAlloc);
  
     /* Scheduler Initialization */
     SchM_Init(&stOs_TaskCfg[0]);

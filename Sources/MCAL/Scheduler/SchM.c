@@ -24,11 +24,13 @@ const tstOs_TaskCfg* pstOs_TaskCfg;     // Pointer to task array configuration
 const tstOs_Task* pstOs_Task;           // Pointer to task configuration
 
 /* This TCB should be created dinamically in Memory */
-tstTCB_Task astTCB_Task[4];             // Number of tasks defined in astOs_Task[]
+//tstTCB_Task astTCB_Task[4];             // Number of tasks defined in astOs_Task[]
+tstTCB_Task* pstTCB_Task;
 tstTCB stTCB;                           // Task Control Block
 
 /* This Queue buffer should be created dinamically in Memory */
-tstQueue astQueue[2];                   // Diferent priorities of tasks
+//tstQueue astQueue[2];                   // Diferent priorities of tasks
+tstQueue* pstQueue;
 tstQueueBuffer stQueueBuffer;           // Queue Buffer 
 
 /*****************************************************************************************************
@@ -62,48 +64,72 @@ void SchM_Background(void);
 void SchM_Init(const tstOs_TaskCfg* Os_TaskCfg)
 {
     u8 u8Index;
-    u8 PriorityIndex = 0;
-    
-    /* Copy tasks configuration pointer */
-    pstOs_TaskCfg = Os_TaskCfg;
-    
-    if(pstOs_TaskCfg->u8NumberOfTasks)
+    //u8 PriorityIndex = 0;
+    tePriority ePriority;
+    u8 u8PriorityCounter;
+    u8 abPriority[5];
+      
+    /* Verify for valid channels */  
+    if(Os_TaskCfg->u8NumberOfTasks)
     {
-        /* Copy task pointer */
+        /* Copy tasks configuration pointer for future use */
+        pstOs_TaskCfg = Os_TaskCfg;           
+        /* Copy task pointer for future use */
         pstOs_Task = (tstOs_Task*)pstOs_TaskCfg->pstOs_Task;
+     
+        
+        /**************************
+         * Reserve memory for TCB *
+         **************************/
+        pstTCB_Task = (tstTCB_Task*)pu8fnMem_Reserve(pstOs_TaskCfg->u8NumberOfTasks * sizeof(tstTCB_Task));
         
         /* Copy configuration to a TCB pointer (status struct) */
-        stTCB.pstTCB_Task = (tstTCB_Task*) &astTCB_Task[0];
+        stTCB.pstTCB_Task = pstTCB_Task;
         stTCB.u8TCB_NumberOfTasks = pstOs_TaskCfg->u8NumberOfTasks;        
     
         /* Fill task control block */
+        ePriority = 0xFF;
+        u8PriorityCounter = 0;
         for(u8Index = 0; u8Index < pstOs_TaskCfg->u8NumberOfTasks; u8Index++)
         {
             /* Initialize Task Control Block */
-            astTCB_Task[u8Index].eTCB_Priority = pstOs_Task[u8Index].ePriority;
-            astTCB_Task[u8Index].tTCB_TaskID = pstOs_Task[u8Index].tTaskID;
-            astTCB_Task[u8Index].tTCB_State = (TaskStateType)SUSPENDED;            
-       
+            pstTCB_Task[u8Index].eTCB_Priority = pstOs_Task[u8Index].ePriority;
+            pstTCB_Task[u8Index].tTCB_TaskID = pstOs_Task[u8Index].tTaskID;
+            pstTCB_Task[u8Index].tTCB_State = (TaskStateType)SUSPENDED; 
+            
+            /* Review how many priorities exist */
+            if(ePriority != pstOs_Task[u8Index].ePriority)
+            {
+                ePriority = pstOs_Task[u8Index].ePriority;
+                
+                /* Save priority in local buffer */
+                abPriority[u8PriorityCounter++] = (u8)ePriority;
+                //u8PriorityCounter++;
+            }                           
         } 
+
+        /*************************************** 
+         * Reserve memory for Priority buffers *
+         ***************************************/
+        pstQueue = (tstQueue*)pu8fnMem_Reserve(u8PriorityCounter * sizeof(tstQueue)); 
+           
+        /* Copy configuration to a Queue buffer pointer */
+        stQueueBuffer.pstQueue = pstQueue;
+        stQueueBuffer.u8NumberOfQueues = u8PriorityCounter;
          
-        /* Initialize priority buffers */
-        /* HARCODED. Se debieran revisar las prioridades que existen
-         * y luego crear los buffers */
-        for(u8Index = 0; u8Index < 2; u8Index++)  
+        /* Fill Queues */ 
+        for(u8Index = 0; u8Index < u8PriorityCounter; u8Index++)  
         {
-            astQueue[u8Index].ePriority = (tePriority)u8Index;
-            astQueue[u8Index].u8Index = 0;
-            (void)memset(&astQueue[u8Index].atTaskBuffer[0],0xFF,10);    
-        }    
+            pstQueue[u8Index].ePriority = (tePriority)abPriority[u8Index];
+            pstQueue[u8Index].u8Index = 0;
+            (void)memset(&pstQueue[u8Index].atTaskBuffer[0],0xFF,sizeof(pstQueue[u8Index].atTaskBuffer));    
+        }        
+           
     }
    
     /* Copy to extern global variable */
-    gu8BUFFER_SIZE = sizeof(astQueue[u8Index].atTaskBuffer)/2;
-     
-    /* Copy configuration to a Queue buffer pointer */
-    stQueueBuffer.pstQueue = (tstQueue*) &astQueue[0];
-    stQueueBuffer.u8NumberOfQueues = 2; // HARCODED. Solo hay dos prioridades 
-    
+    gu8BUFFER_SIZE = sizeof(pstQueue[u8Index].atTaskBuffer) / 2;
+          
     /* Operative system initialization */
     Os_Init(&stTCB, &stQueueBuffer);
     
@@ -181,7 +207,7 @@ void SchM_OsTick(void)
             /*****************
              * Activate task *
              *****************/
-            (void)Os_ActivateTask(astTCB_Task[u8IndexTable].tTCB_TaskID);     
+            (void)Os_ActivateTask(pstTCB_Task[u8IndexTable].tTCB_TaskID);     
             break;
         }
     }
@@ -225,13 +251,13 @@ void SchM_Dispatcher(void)
     
     for(u8QueueIndex = 0; u8QueueIndex < stQueueBuffer.u8NumberOfQueues; u8QueueIndex++)
     {
-        if(astQueue[u8QueueIndex].u8Index)
+        if(pstQueue[u8QueueIndex].u8Index)
         {
             /* Copy taskID from priority buffer */
-            TaskID = (TaskType)astQueue[u8QueueIndex].atTaskBuffer[0];
+            TaskID = (TaskType)pstQueue[u8QueueIndex].atTaskBuffer[0];
             
             /* Set task state to running */
-            astTCB_Task[TaskID].tTCB_State = (TaskStateType)RUNNING;
+            pstTCB_Task[TaskID].tTCB_State = (TaskStateType)RUNNING;
             
             /****************
              * Execute Task *

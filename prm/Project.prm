@@ -19,8 +19,8 @@ SEGMENTS /* here all RAM/ROM areas of the device are listed. Used in PLACEMENT b
       EEPROM        = READ_ONLY   DATA_NEAR IBCC_NEAR  0x0C00 TO   0x0FFF; 
 
 /* non-paged RAM */
-      RAM           = READ_WRITE  DATA_NEAR            0x2000 TO   0x3FFF; 
-
+      RAM           = READ_WRITE  DATA_NEAR            0x2000 TO   0x2FFF; 
+      RAM_HEAP      = READ_WRITE                       0x3000 TO   0x3FFF	ALIGN 2[1:1]; /* word align for XGATE accesses */
 /* non-banked FLASH */
       ROM_4000      = READ_ONLY   DATA_NEAR IBCC_NEAR  0x4000 TO   0x7FFF; 
       ROM_C000      = READ_ONLY   DATA_NEAR IBCC_NEAR  0xC000 TO   0xFEFF; 

@@ -21,6 +21,7 @@
 #include "Typedefs.h"
 #include "Mcu.h"
 #include "Gpt.h"
+#include "Mem.h"
 #include "SchM.h"
 #include "Ect.h"
 

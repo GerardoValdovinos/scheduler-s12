@@ -118,8 +118,7 @@ eOsStatus Os_TerminateTask(void)
         /* Retrieve task from queue */
         RetrieveFromQueue(pstOs_TCBTask[RunningTask].eTCB_Priority);
         
-        return E_OK; 
-        
+        return E_OK;        
     }
     else
     {
@@ -147,9 +146,9 @@ eOsStatus Os_GetTaskID(TaskRefType pTask)
             *pTask = pstOs_TCBTask[u8Index].tTCB_TaskID;
 
             return E_OK;
-        }
-        
+        }       
     }
+    
     /* There isn't a running task */
     pTask = NULL;
     

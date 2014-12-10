@@ -35,8 +35,8 @@ typedef struct
 
 typedef struct 
 {      
-    u8                          u8RamPages;         // Number of Ram pages
-    const tstRamPageStatus*     pstRamPageStatus;   // Pointer to Ram page array
+    u8                  u8RamPages;         // Number of Ram pages
+    tstRamPageStatus*   pstRamPageStatus;   // Pointer to Ram page array
 }tstMemAllocStatus;
 
 /*****************************************************************************************************
@@ -47,6 +47,9 @@ typedef struct
 
 
 /*-- Function Prototypes -----------------------------------------------------*/
+void vfnMem_Init(const tstMemAlloc* MemAlloc);
+u8* pu8fnMem_Reserve(u16 u16Size);
+void vfnMem_Erase(u8* u8StartAddress, u16 u16Size);
 
 #endif /* __MEM_H */
 
