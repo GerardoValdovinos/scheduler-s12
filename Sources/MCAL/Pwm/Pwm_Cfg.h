@@ -1,29 +1,26 @@
 /****************************************************************************************************/
 /**
 
-\file       Os_Task.h
-\brief      Operative System Module Tasks
+\file       Pwm_Cfg.h
+\brief      Pulse width modulation configuration
 \author     Gerardo Valdovinos
 \version    1.0
-\date       03/11/2014
+\date       17/12/2014
 */
 /****************************************************************************************************/
 
 /****************************************************************************************************/
 
-#ifndef __OS_TASK_H
-#define __OS_TASK_H
+#ifndef __PWM_CFG_H
+#define __PWM_CFG_H
 
 
 /*****************************************************************************************************
 * Include files
 *****************************************************************************************************/
-#include "Os_Types.h"
-#include "Os_TaskM.h"
-
-/* Task functions includes */
-#include "Control.h"
-#include "Sci.h"
+#include <hidef.h>          /* common defines and macros */
+#include "derivative.h"     /* derivative-specific definitions */
+#include "Typedefs.h"
 /*****************************************************************************************************
 * Definition of module wide VARIABLES
 *****************************************************************************************************/
@@ -34,15 +31,27 @@
 
 /*-- Macros ------------------------------------------------------------------*/
 
+#define PWM_CH01       1u
+#define PWM_CH23       3u
+#define PWM_CH45       5u
+#define PWM_CH67       7u    
 
+typedef struct
+{
+    u8                      u8Channel16;    // Pwm channel
+    u16                     u16Frequency;   // Pwm frequency
+    u16                     u16DutyCycle;   // Pwm Duty cycle initial
+}tstPwmChannelCfg;
+
+typedef struct
+{
+    u8                      u8Channels;     // Number of channels
+    const tstPwmChannelCfg* stChannelCfg;   // Pointer to channels configuration
+}tstPwmDriverCfg;
+  
 /*-- Function Prototypes -----------------------------------------------------*/
-DeclareTask(Task_1ms);
-DeclareTask(Task_4ms);
-DeclareTask(Task_8ms);
-DeclareTask(Task_16ms);
-DeclareTask(Task_32ms);
-DeclareTask(Task_64ms);
+extern const tstPwmDriverCfg stPwmDriverCfg;
 
-#endif /* __OS_TASK_H */
+#endif /* __PWM_CFG_H */
 
 /*******************************************************************************/

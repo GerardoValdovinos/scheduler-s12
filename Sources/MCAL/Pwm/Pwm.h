@@ -1,48 +1,49 @@
 /****************************************************************************************************/
 /**
 
-\file       Os_Task.h
-\brief      Operative System Module Tasks
+\file       Pwm.h
+\brief      Pulse width modulation driver
 \author     Gerardo Valdovinos
 \version    1.0
-\date       03/11/2014
+\date       17/12/2014
 */
 /****************************************************************************************************/
 
 /****************************************************************************************************/
 
-#ifndef __OS_TASK_H
-#define __OS_TASK_H
+#ifndef __PWM_H
+#define __PWM_H
 
 
 /*****************************************************************************************************
 * Include files
 *****************************************************************************************************/
-#include "Os_Types.h"
-#include "Os_TaskM.h"
-
-/* Task functions includes */
-#include "Control.h"
-#include "Sci.h"
+#include "Pwm_Cfg.h"
 /*****************************************************************************************************
 * Definition of module wide VARIABLES
 *****************************************************************************************************/
-
+extern u32 u32BusFreq;
 /*****************************************************************************************************
 * Definition of module wide MACROs / #DEFINE-CONSTANTs
 *****************************************************************************************************/
 
 /*-- Macros ------------------------------------------------------------------*/
+#define PWM_CHANNEL_OFFSET                  2u
+#define PWM_OFFSET(value)                   (u8)(PWM_CHANNEL_OFFSET * value)
 
+#define PWMPER(value)                       *(u16*)( &PWMPER0 + PWM_OFFSET(value - 1) )
+#define PWMPER_W(channel, frequency)        PWMPER(channel) = (u16)(u32BusFreq / (4 * frequency))
+
+#define PWMDTY(value)                       *(u16*)( &PWMDTY0 + PWM_OFFSET(value - 1) )
+#define PWMDTY_W(channel, value)            PWMDTY(channel) = value
+
+#define PWME_W(channel, status)             PWME |= (status << channel)
 
 /*-- Function Prototypes -----------------------------------------------------*/
-DeclareTask(Task_1ms);
-DeclareTask(Task_4ms);
-DeclareTask(Task_8ms);
-DeclareTask(Task_16ms);
-DeclareTask(Task_32ms);
-DeclareTask(Task_64ms);
+void vfnPwm_Init(const tstPwmDriverCfg* PwmDriverCfg);
+void vfnPwm_Start(u8 u8Channel);
+void vfnPwm_End(u8 u8Channel);
 
-#endif /* __OS_TASK_H */
+#endif /* __PWM_H */
 
 /*******************************************************************************/

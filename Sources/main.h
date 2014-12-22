@@ -24,6 +24,8 @@
 #include "Mem.h"
 #include "SchM.h"
 #include "Ect.h"
+#include "Sci.h"
+#include "Pwm.h"
 
 /*****************************************************************************************************
 * Definition of module wide VARIABLES

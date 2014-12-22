@@ -1,10 +1,10 @@
 /*******************************************************************************/
 /**
-\file       main.c
-\brief      Main function.
+\file       Pwm_Cfg.c
+\brief      Pulse width modulation configuration
 \author     Gerardo Valdovinos
 \version    1.0
-\date       8/10/2014
+\date       17/12/2014
 */
 /****************************************************************************************************/
 
@@ -13,7 +13,7 @@
 *****************************************************************************************************/
 
 /** Own headers */
-#include "main.h"
+#include "Pwm_Cfg.h"
 /** Used modules */
 
 /*****************************************************************************************************
@@ -35,6 +35,21 @@
 /*****************************************************************************************************
 * Definition of module wide (CONST-) CONSTANTs 
 *****************************************************************************************************/
+/* Only paired channels (16 bits) and max 4 channels */
+const tstPwmChannelCfg astPwmChannelCfg[] =
+{
+    {
+        PWM_CH01,          // Pwm channel
+        (u16)10000,             // Pwm frequency
+        (u16)0                  // Pwm Duty cycle initial
+    }
+};
+
+const tstPwmDriverCfg stPwmDriverCfg =
+{
+    sizeof(astPwmChannelCfg)/sizeof(astPwmChannelCfg[0]),
+    &astPwmChannelCfg[0]
+};
 
 /*****************************************************************************************************
 * Code of module wide FUNCTIONS
@@ -42,84 +57,11 @@
 
 /****************************************************************************************************/
 /**
-* \brief    Main function
+* \brief    
 * \author   Gerardo Valdovinos
-* \param    void 
+* \param    void
 * \return   void
+* \Notes:   We take this code from Abrahams example =)     
 */
-void main(void) 
-{    
-    /* Port Initialization */
-    Gpio_Init();
-       
-    /* Mcu Initialization */
-    Mcu_Init();
-    
-    /* Gpt Initialization */
-    Gpt_Init(&stGpt_DriverCfg[0]);
-    
-    /* Ect Initialization */
-    Ect_Init();
-    
-    /* Pwm Initialization */
-    vfnPwm_Init(&stPwmDriverCfg);
-      
-    /* Memory allocation Initialization */
-    vfnMem_Init(&stMemAlloc);
-    
-    /* Serial Communication interface Initialization */
-    vfnSci_Init(&stSciDriverCfg);
- 
-    /* Scheduler Initialization */
-    SchM_Init(&stOs_TaskCfg[0]);
-    
-    /* Enable Interrupts */   
-    EnableInterrupts;
-
-    /************************ 
-     * Peripherals start    *
-     ************************/
-    /* Input capture start */
-    //Ect_Start();
-    
-    /* Pwm start */
-    vfnPwm_Start(PWM_CH01);
-    
-    /* SCI channel 0 start */
-    vfnSci_ON(SCI_CH0);
-    
-    
-    /***********************************
-     * Scheduler start. Never get back *
-     ***********************************/
-    SchM_Start();
-
-}
-/****************************************************************************************************/
 
 /****************************************************************************************************/
-/**
-* \brief    Gpio Initialization
-* \author   Gerardo Valdovinos
-* \param    void 
-* \return   void
-*/
-void Gpio_Init(void)
-{
-    /* Data Port A initialization */
-    PORTA = 0x00u;
-    /* Data Direction Register Setup */
-    DDRA =  0xFFu;
-    /* Data Direction Register Setup for Port P */
-    DDRP =  0x00; 
-    
-    // Solo para pruebas. Activacion del pull-up del puerto T
-    DDRT = 0x00;
-    PERT_PERT0 = 1;  
-}
-
-
-
-
-
-
