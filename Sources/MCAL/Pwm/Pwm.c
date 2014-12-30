@@ -129,3 +129,16 @@ void vfnPwm_End(u8 u8Channel)
 }
 
 /****************************************************************************************************/
+/**
+* \brief    Pwm change duty cycle
+* \author   Gerardo Valdovinos
+* \param    void
+* \return   void    
+*/
+void vfnPwm_DC(u8 u8Channel, u16 u16DutyCycle)
+{
+    /* Set duty cycle */
+    PWMDTY_W(u8Channel, u16DutyCycle);                    
+}
+
+/****************************************************************************************************/

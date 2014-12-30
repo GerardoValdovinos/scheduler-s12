@@ -140,8 +140,8 @@ void (* near const vectors[])(void) @ 0xFF10 =
   vfnDummy_D_Isr,          /* 0x67  0xFFCE ivVu8Reserved24   */
   vfnDummy_D_Isr,          /* 0x68  0xFFD0 ivVatd          */
   vfnDummy_D_Isr,          /* 0x69  0xFFD2 ivVu8Reserved22   */
-  vfnDummy_D_Isr,          /* 0x6A  0xFFD4 ivVsci1         */
-  vfnDummy_D_Isr,          /* 0x6B  0xFFD6 ivVsci0         */
+  vfnSci1_TxRxIsr,          /* 0x6A  0xFFD4 ivVsci1         */
+  vfnSci0_TxRxIsr,          /* 0x6B  0xFFD6 ivVsci0         */
   vfnDummy_D_Isr,          /* 0x6C  0xFFD8 ivVspi0         */
   vfnDummy_D_Isr,          /* 0x6D  0xFFDA ivVtimpaie      */
   vfnDummy_D_Isr,          /* 0x6E  0xFFDC ivVtimpaaovf    */

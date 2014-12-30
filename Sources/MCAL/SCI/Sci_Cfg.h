@@ -49,8 +49,8 @@ typedef struct
 	vpfn	            pfnRxCallback;      // Rx Callback function   	
     u8                  u8TxEnable;         // Tx Enable
     u8                  u8RxEnable;         // Rx Enable
-    u8                  u8TxIntEnable;      // Tx Interrupt enable
-    u8                  u8RxIntEnable;      // Rx Interrupt enable
+    //u8                  u8TxIntEnable;      // Tx Interrupt enable
+    //u8                  u8RxIntEnable;      // Rx Interrupt enable
 }tstSciChannelCfg;
 
 

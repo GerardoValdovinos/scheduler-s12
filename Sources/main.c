@@ -83,7 +83,7 @@ void main(void)
     //Ect_Start();
     
     /* Pwm start */
-    vfnPwm_Start(PWM_CH01);
+    //vfnPwm_Start(PWM_CH01);
     
     /* SCI channel 0 start */
     vfnSci_ON(SCI_CH0);

@@ -43,6 +43,7 @@ extern u32 u32BusFreq;
 void vfnPwm_Init(const tstPwmDriverCfg* PwmDriverCfg);
 void vfnPwm_Start(u8 u8Channel);
 void vfnPwm_End(u8 u8Channel);
+void vfnPwm_DC(u8 u8Channel, u16 u16DutyCycle);
 
 #endif /* __PWM_H */
 

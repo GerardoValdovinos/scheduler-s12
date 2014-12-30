@@ -48,8 +48,8 @@ const tstSciChannelCfg stSciChannelCfg[] =
     	NULL,               // Rx Callback function   	
         (u8)ENABLE,         // Tx Enable
         (u8)ENABLE,         // Rx Enable
-        (u8)DISABLE,         // Tx Interrupt enable
-        (u8)DISABLE,         // Rx Interrupt enable        
+        //(u8)DISABLE,         // Tx Interrupt enable
+        //(u8)DISABLE,         // Rx Interrupt enable        
     }
 }; 
 
