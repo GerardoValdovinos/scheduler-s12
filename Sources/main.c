@@ -58,15 +58,15 @@ void main(void)
     /* Gpt Initialization */
     Gpt_Init(&stGpt_DriverCfg[0]);
     
-    /* Ect Initialization */
-    Ect_Init();
-    
     /* Pwm Initialization */
     vfnPwm_Init(&stPwmDriverCfg);
       
     /* Memory allocation Initialization */
     vfnMem_Init(&stMemAlloc);
     
+    /* Ect Initialization */
+    Ect_Init(&stEctDriverCfg);
+        
     /* Serial Communication interface Initialization */
     vfnSci_Init(&stSciDriverCfg);
  
@@ -80,7 +80,7 @@ void main(void)
      * Peripherals start    *
      ************************/
     /* Input capture start */
-    //Ect_Start();
+    //Ect_Enable(ECT_CH0);
     
     /* Pwm start */
     //vfnPwm_Start(PWM_CH01);

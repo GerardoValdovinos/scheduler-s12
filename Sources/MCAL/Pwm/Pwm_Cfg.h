@@ -31,11 +31,14 @@
 
 /*-- Macros ------------------------------------------------------------------*/
 
-#define PWM_CH01       1u
-#define PWM_CH23       3u
-#define PWM_CH45       5u
-#define PWM_CH67       7u    
-
+typedef enum
+{
+    PWM_CH01 = 0,
+    PWM_CH23,       
+    PWM_CH45,      
+    PWM_CH67          
+}tePwmCh;
+    
 typedef struct
 {
     u8                      u8Channel16;    // Pwm channel

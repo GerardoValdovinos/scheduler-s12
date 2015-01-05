@@ -36,6 +36,21 @@
 /*****************************************************************************************************
 * Definition of module wide (CONST-) CONSTANTs 
 *****************************************************************************************************/
+const tstEctChannelCfg astEctChannelCfg[] =
+{
+    {
+        ECT_CH0,
+    }, 
+    {
+        ECT_CH1,
+    }  
+};
+
+const tstEctDriverCfg stEctDriverCfg =
+{
+    sizeof(astEctChannelCfg)/sizeof(astEctChannelCfg[0]),
+    &astEctChannelCfg[0]
+};
 
 /*****************************************************************************************************
 * Code of module wide FUNCTIONS

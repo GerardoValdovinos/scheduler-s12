@@ -39,10 +39,15 @@
 const tstPwmChannelCfg astPwmChannelCfg[] =
 {
     {
-        PWM_CH01,          // Pwm channel
+        PWM_CH01,               // Pwm channel
         (u16)10000,             // Pwm frequency
         (u16)0                  // Pwm Duty cycle initial
-    }
+    },
+    {
+        PWM_CH23,               // Pwm channel
+        (u16)10000,             // Pwm frequency
+        (u16)0                  // Pwm Duty cycle initial
+    }    
 };
 
 const tstPwmDriverCfg stPwmDriverCfg =

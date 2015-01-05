@@ -83,7 +83,7 @@ void vfnPwm_Init(const tstPwmDriverCfg* PwmDriverCfg)
             PWMPER_W(u8Channel16, u16Frequency);
             
             /* Set duty cycle */
-            PWMDTY_W(u8Channel16, u16DutyCycle);    
+            PWMDTY_W(u8Channel16, u16DutyCycle);              
         } 
     }
 
@@ -112,7 +112,7 @@ void vfnPwm_Init(const tstPwmDriverCfg* PwmDriverCfg)
 void vfnPwm_Start(u8 u8Channel)
 {
     /* Enable channel */
-    PWME_W(u8Channel, TRUE);                    
+    PWME_SET(u8Channel);                    
 }
 
 /****************************************************************************************************/
@@ -125,7 +125,7 @@ void vfnPwm_Start(u8 u8Channel)
 void vfnPwm_End(u8 u8Channel)
 {
     /* Enable channel */
-    PWME_W(u8Channel, FALSE);                    
+    PWME_CLEAR(u8Channel);                    
 }
 
 /****************************************************************************************************/

@@ -137,14 +137,6 @@ void vfnSci_ON(teSciChannel Channel)
         SCICR2_SET(Channel, SCI_RE_BIT);
         SCICR2_SET(Channel, SCI_RIE_BIT);
     }
-    
-    /* Configuration for the channel */
-    /*SCICR2_W(   Channel,
-                ((pstSciChannel[Channel].u8ChannelCfg & SCI_RE_MASK) >> SCI_RE_OFFSET),
-                ((pstSciChannel[Channel].u8ChannelCfg & SCI_TE_MASK) >> SCI_TE_OFFSET),
-                ((pstSciChannel[Channel].u8ChannelCfg & SCI_RIE_MASK) >> SCI_RIE_OFFSET),
-                0);       
-    */
                 
     /* Set status of channel to SCI_ON */
     pstSciChannel[Channel].u8Status = SCI_ON;                  
@@ -159,29 +151,13 @@ void vfnSci_ON(teSciChannel Channel)
 */
 void vfnSci_OFF(teSciChannel Channel)
 {
-    /* Is Tx enable? */
-    if(pstSciChannel[Channel].u8TxEnable)
-    {
-        /* Turn off Tx part */
-        SCICR2_CLEAR(Channel, SCI_TE_BIT);
-        SCICR2_CLEAR(Channel, SCI_TIE_BIT);
-    }
-    
-    /* Is Rx enable? */
-    if(pstSciChannel[Channel].u8RxEnable)
-    {
-        /* Turn off Rx part */
-        SCICR2_CLEAR(Channel, SCI_RE_BIT);
-        SCICR2_CLEAR(Channel, SCI_RIE_BIT);
-    }
-    
-    /* Configuration for the channel. Turn off RE and TE */
-    /*SCICR2_W(   Channel,
-                0,
-                0,
-                (pstSciChannel[Channel].u8ChannelCfg & SCI_RIE_MASK),
-                (pstSciChannel[Channel].u8ChannelCfg & SCI_TIE_MASK));
-    */
+    /* Turn off Tx part */
+    SCICR2_CLEAR(Channel, SCI_TE_BIT);
+    SCICR2_CLEAR(Channel, SCI_TIE_BIT);
+
+    /* Turn off Rx part */
+    SCICR2_CLEAR(Channel, SCI_RE_BIT);
+    SCICR2_CLEAR(Channel, SCI_RIE_BIT);
                 
     /* Set status of channel to SCI_OFF */
     pstSciChannel[Channel].u8Status = SCI_OFF;      
