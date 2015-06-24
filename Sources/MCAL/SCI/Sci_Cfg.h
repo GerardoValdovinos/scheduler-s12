@@ -40,7 +40,7 @@ typedef enum
 }teSciChannel;
 
 typedef struct 
-{
+{       
     teSciChannel	    eChannel;           // Channel
  	u32			        u32Baudrate;	    // Baudrate 
 	u8			        u8TxBufferSize;     // Tx Buffer size

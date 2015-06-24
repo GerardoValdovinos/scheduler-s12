@@ -73,7 +73,7 @@
 
       
 /*-- Function Prototypes -----------------------------------------------------*/
-extern void Mcu_Init( void );
+void Mcu_Init( void );
 void Mcu_InitClock( void );
 void Mcu_DistributePllClock( void );
 

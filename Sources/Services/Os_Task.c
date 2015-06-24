@@ -54,13 +54,15 @@ TASK(Task_1ms)
     /* Call to Control of pendubot function */
     vfnCtrl_Pendubot();
     
+    PORTA_PA0 ^= 1;
+    /*
     time++;
     if(time >= 400)
     {
         PORTA_PA0 ^= 1; 
         time = 0;
     } 
-    
+    */
     (void)Os_TerminateTask();     
 }
 /****************************************************************************************************/
@@ -127,6 +129,12 @@ TASK(Task_16ms)
         //(void)u8fnSci_TxChar(SCI_CH0, 31);
         vfnSci_Tx(SCI_CH0, (u8*)&au8Temp[0], sizeof(au8Temp));
     } 
+    
+    // Escribir un byte por SPI
+    if(SPI0SR_SPTEF == 1)
+    {
+        SPI0DRL = 0xAA;
+    }
       
     (void)Os_TerminateTask();     
 }

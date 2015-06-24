@@ -39,6 +39,18 @@
 /*****************************************************************************************************
 * Code of module wide FUNCTIONS
 ****************************************************************************************************/
+void vfnSPIInit(void)
+{
+    SPI0CR1 =   SPI0CR1_SPE_MASK | //SPI0CR1_SPTIE_MASK |               
+                SPI0CR1_MSTR_MASK |
+                SPI0CR1_SSOE_MASK;
+                
+    SPI0CR2 =   SPI0CR2_XFRW_MASK | SPI0CR2_MODFEN_MASK;
+    //SPI0CR2_MODFEN = 1;            
+                
+    SPI0BR_SPPR = 0;
+    SPI0BR_SPR = 1;                                
+}
 
 /****************************************************************************************************/
 /**
@@ -59,7 +71,7 @@ void main(void)
     Gpt_Init(&stGpt_DriverCfg[0]);
     
     /* Pwm Initialization */
-    vfnPwm_Init(&stPwmDriverCfg);
+    //vfnPwm_Init(&stPwmDriverCfg);
       
     /* Memory allocation Initialization */
     vfnMem_Init(&stMemAlloc);
@@ -76,6 +88,8 @@ void main(void)
     /* Enable Interrupts */   
     EnableInterrupts;
 
+    vfnSPIInit();
+    
     /************************ 
      * Peripherals start    *
      ************************/
@@ -95,7 +109,6 @@ void main(void)
     SchM_Start();
 
 }
-/****************************************************************************************************/
 
 /****************************************************************************************************/
 /**
@@ -119,7 +132,7 @@ void Gpio_Init(void)
 }
 
 
-
+/****************************************************************************************************/
 
 
 

@@ -18,6 +18,9 @@
 /*****************************************************************************************************
 * Include files
 *****************************************************************************************************/
+#include <hidef.h>          /* common defines and macros */
+#include "derivative.h"     /* derivative-specific definitions */
+
 #include "Typedefs.h"
 #include "Mcu.h"
 #include "Gpt.h"
