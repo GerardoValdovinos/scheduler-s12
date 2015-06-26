@@ -1,60 +1,66 @@
 /****************************************************************************************************/
 /**
 
-\file       Os_Task.h
-\brief      Operative System Module Tasks
+\file       Spi_Cfg.h
+\brief      Serial Peripheral Interface configuration
 \author     Gerardo Valdovinos
 \version    1.0
-\date       03/11/2014
+\date       18/11/2014
 */
 /****************************************************************************************************/
 
 /****************************************************************************************************/
-
-#ifndef __OS_TASK_H
-#define __OS_TASK_H
-
-
+#ifndef __SPI_CFG_H
+#define __SPI_CFG_H
 /*****************************************************************************************************
 * Include files
 *****************************************************************************************************/
-#include "Os_Types.h"
-#include "Os_TaskM.h"
-
-/* Task functions includes */
-#include "Control.h"
-#include "Sci.h"
+//#include <hidef.h>          /* common defines and macros */
+//#include "derivative.h"     /* derivative-specific definitions */
+//#include "Typedefs.h"
 /*****************************************************************************************************
 * Definition of module wide VARIABLES
 *****************************************************************************************************/
+#define SPI_6MHZ                1u
+#define SPI_8MHZ                2u
+#define SPI_12MHZ               3u
+#define SPI_24MHZ               4u
 
+#define SPI_8BITS               1u
+#define SPI_16BITS              2u
+
+#define SPI_CPOL_LOW            1u
+#define SPI_CPOL_HIGH           3u
 /*****************************************************************************************************
 * Definition of module wide MACROs / #DEFINE-CONSTANTs
 *****************************************************************************************************/
+
+/*-- Macros ------------------------------------------------------------------*/
+/*
+typedef enum
+{
+    SPI_CH0 = 0,
+    SPI_CH1,
+    SPI_CH2,
+}teSpiCh;
+
 typedef struct
 {
-    u8  u8LedMask;
-    u8  u8Status;
-    u8  u8Freq;
-    u8  u8FreqCnt;
-    u8  u8Times;
-    u8  u8Cnt;        
-}tstLed;
-/*-- Macros ------------------------------------------------------------------*/
+    teSpiCh                     eChannel;
+    u8                          u8Speed;
+    u8                          u8Bits;
+    u8                          u8Cpol;  
+}tstSpiChannelCfg;
 
-
+typedef struct
+{
+    u8                          u8Channels;
+    const tstSpiChannelCfg*     pstChannelCfg;    
+}tstSpiDriverCfg;
+*/
 /*-- Function Prototypes -----------------------------------------------------*/
-DeclareTask(Task_1ms);
-DeclareTask(Task_2ms);
-DeclareTask(Task_4ms);
-DeclareTask(Task_8ms);
-DeclareTask(Task_16ms);
-DeclareTask(Task_32ms);
-DeclareTask(Task_64ms);
+//extern const tstEctDriverCfg stEctDriverCfg;
 
-
-void vfnLedManager(tstLed *pstLed);
-
-#endif /* __OS_TASK_H */
+#endif /* __SPI_CFG_H */
 
 /*******************************************************************************/

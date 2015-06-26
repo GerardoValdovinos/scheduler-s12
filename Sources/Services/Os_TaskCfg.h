@@ -72,13 +72,10 @@ typedef enum
 
 #define OFFSET0         (0)
 #define OFFSET1         (1)
-#define OFFSET2         (2)
 #define OFFSET3         (3)
-#define OFFSET4         (4)
-#define OFFSET5         (5)
-#define OFFSET6         (6)
 #define OFFSET7         (7)
-#define OFFSET8         (8)
+#define OFFSET15        (15)
+#define OFFSET31        (31)
 
 /* Configuration typedefs */ 
 typedef struct

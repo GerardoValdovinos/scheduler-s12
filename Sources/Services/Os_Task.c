@@ -19,7 +19,42 @@
 /*****************************************************************************************************
 * Definition of module wide VARIABLEs 
 *****************************************************************************************************/
-
+tstLed astLed[] =
+{
+    {
+        PORTA_PA0_MASK,
+        LED_OFF;
+        LED_LOW_FREQ;
+        0;
+        0;
+        0;        
+    },
+    {
+        PORTA_PA1_MASK,
+        LED_OFF;
+        LED_LOW_FREQ;
+        0;
+        0;
+        0;        
+    },
+    {
+        PORTA_PA2_MASK,
+        LED_OFF;
+        LED_LOW_FREQ;
+        0;
+        0;
+        0;        
+    },
+    {
+        PORTA_PA3_MASK,
+        LED_OFF;
+        LED_LOW_FREQ;
+        0;
+        0;
+        0;        
+    },
+        
+};
 /*****************************************************************************************************
 * Declaration of module wide FUNCTIONs 
 *****************************************************************************************************/
@@ -55,6 +90,33 @@ TASK(Task_1ms)
     vfnCtrl_Pendubot();
     
     PORTA_PA0 ^= 1;
+    /*
+    time++;
+    if(time >= 400)
+    {
+        PORTA_PA0 ^= 1; 
+        time = 0;
+    } 
+    */
+    (void)Os_TerminateTask();     
+}
+/****************************************************************************************************/
+
+/****************************************************************************************************/
+/**
+* \brief    Task 1 - 1ms Period
+* \author   Gerardo Valdovinos
+* \param    void
+* \return   void   
+*/
+TASK(Task_2ms)
+{
+    static u16 time = 0;
+
+    /* Call to Control of pendubot function */
+    
+    
+    
     /*
     time++;
     if(time >= 400)
@@ -120,6 +182,10 @@ TASK(Task_16ms)
 {
     static u16 time = 0;
     
+    /* This task controls the leds */
+    vfnLedManager(tstLed *pstLed)
+    
+    
     time++;
     if(time >= 200)
     {
@@ -161,6 +227,40 @@ TASK(Task_32ms)
 TASK(Task_64ms)
 {
     ;    
+}
+
+/**
+* \brief    Manager of leds. It permit a led to turn on, turn off and toggle.
+* \author   Gerardo Valdovinos
+* \param    void
+* \return   void   
+*/
+void vfnLedManager(tstLed *pstLed)
+{  
+    switch(stLed->u8Status)
+    {
+    case LED_ON:
+        PORTA |= (1 << stLed->u8LedMask);
+        break;
+    case LED_OFF:
+        PORTA &= ~(1 << stLed->u8LedMask);
+        break;
+    case LED_TOGGLE:
+        stLed.u8FreqCnt++;
+        if(stLed->u8FreqCnt >= stLed->u8Freq )
+        {
+            stLed->u8FreqCnt = 0;
+            PORTA ^= (1 << stLed->u8LedMask);
+            
+            if( (stLed->u8Cnt != 0xFF) && (stLed->u8Cnt >= (stLed->u8Times * 2)))
+            {
+                stLed->u8Status = LED_OFF;
+            }
+        }
+        break;
+    default:
+        break;
+    }
 }
 /****************************************************************************************************/
 
