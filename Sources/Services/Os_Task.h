@@ -41,17 +41,25 @@ typedef struct
     u8  u8Cnt;        
 }tstLed;
 /*-- Macros ------------------------------------------------------------------*/
+#define LED_ON              1
+#define LED_OFF             2
+#define LED_TOGGLE          3
 
+#define LED_LOW_FREQ        14
+#define LED_MEDIUM_FREQ     7
+#define LED_HIGH_FREQ       2
+
+#define BUTTON_0            1
+#define BUTTON_0_LONG       2
+#define BUTTON_1            3
+#define BUTTON_1_LONG       4
 
 /*-- Function Prototypes -----------------------------------------------------*/
 DeclareTask(Task_1ms);
 DeclareTask(Task_2ms);
 DeclareTask(Task_4ms);
-DeclareTask(Task_8ms);
-DeclareTask(Task_16ms);
-DeclareTask(Task_32ms);
 DeclareTask(Task_64ms);
-
+DeclareTask(Task_128ms);
 
 void vfnLedManager(tstLed *pstLed);
 

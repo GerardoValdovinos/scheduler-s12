@@ -70,12 +70,12 @@ typedef enum
 #define MASK_64ms       (0b01111111)
 #define MASK_128ms      (0b11111111)
 
-#define OFFSET0         (0)
-#define OFFSET1         (1)
+#define OFFSET1         (0)
+#define OFFSET2         (1)
 #define OFFSET3         (3)
-#define OFFSET7         (7)
-#define OFFSET15        (15)
-#define OFFSET31        (31)
+#define OFFSET4         (7)
+#define OFFSET5        (15)
+#define OFFSET6        (31)
 
 /* Configuration typedefs */ 
 typedef struct

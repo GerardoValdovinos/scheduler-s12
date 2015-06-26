@@ -23,38 +23,40 @@ tstLed astLed[] =
 {
     {
         PORTA_PA0_MASK,
-        LED_OFF;
-        LED_LOW_FREQ;
-        0;
-        0;
-        0;        
+        LED_OFF,
+        LED_LOW_FREQ,
+        0,
+        0,
+        0,        
     },
     {
         PORTA_PA1_MASK,
-        LED_OFF;
-        LED_LOW_FREQ;
-        0;
-        0;
-        0;        
+        LED_OFF,
+        LED_LOW_FREQ,
+        0,
+        0,
+        0,        
     },
     {
         PORTA_PA2_MASK,
-        LED_OFF;
-        LED_LOW_FREQ;
-        0;
-        0;
-        0;        
+        LED_OFF,
+        LED_LOW_FREQ,
+        0,
+        0,
+        0,         
     },
     {
         PORTA_PA3_MASK,
-        LED_OFF;
-        LED_LOW_FREQ;
-        0;
-        0;
-        0;        
-    },
-        
+        LED_OFF,
+        LED_LOW_FREQ,
+        0,
+        0,
+        0,         
+    },        
 };
+
+u8 u8Button0;
+u8 u8Button1;
 /*****************************************************************************************************
 * Declaration of module wide FUNCTIONs 
 *****************************************************************************************************/
@@ -84,12 +86,12 @@ u8 au8Temp[] = "Que onda";
 */
 TASK(Task_1ms)
 {
-    static u16 time = 0;
+    //static u16 time = 0;
 
     /* Call to Control of pendubot function */
-    vfnCtrl_Pendubot();
+    //vfnCtrl_Pendubot();
     
-    PORTA_PA0 ^= 1;
+    //PORTA_PA0 ^= 1;
     /*
     time++;
     if(time >= 400)
@@ -104,95 +106,28 @@ TASK(Task_1ms)
 
 /****************************************************************************************************/
 /**
-* \brief    Task 1 - 1ms Period
+* \brief    Task 2 - 1ms Period
 * \author   Gerardo Valdovinos
 * \param    void
 * \return   void   
 */
 TASK(Task_2ms)
 {
-    static u16 time = 0;
 
-    /* Call to Control of pendubot function */
-    
-    
-    
-    /*
-    time++;
-    if(time >= 400)
-    {
-        PORTA_PA0 ^= 1; 
-        time = 0;
-    } 
-    */
     (void)Os_TerminateTask();     
 }
 /****************************************************************************************************/
 
 /****************************************************************************************************/
 /**
-* \brief    Task 2 - 4ms Period
+* \brief    Task 3 - 4ms Period
 * \author   Gerardo Valdovinos
 * \param    void
 * \return   void   
 */
 TASK(Task_4ms)
 {
-    static u16 time = 0;
-    
-    time++;
-    if(time >= 200)
-    {
-        PORTA_PA1 ^= 1; 
-        time = 0;
-    } 
-    
-    (void)Os_TerminateTask();    
-}
-/****************************************************************************************************/
-/****************************************************************************************************/
-/**
-* \brief    Task 3 - 8ms Period
-* \author   Gerardo Valdovinos
-* \param    void
-* \return   void   
-*/
-TASK(Task_8ms)
-{
-    static u16 time = 0;
-    
-    time++;
-    if(time >= 200)
-    {
-        PORTA_PA2 ^= 1; 
-        time = 0;
-    } 
-    
-    (void)Os_TerminateTask();     
-}
-/****************************************************************************************************/
-/****************************************************************************************************/
-/**
-* \brief    Task 4 - 16ms Period
-* \author   Gerardo Valdovinos
-* \param    void
-* \return   void   
-*/
-TASK(Task_16ms)
-{
-    static u16 time = 0;
-    
-    /* This task controls the leds */
-    vfnLedManager(tstLed *pstLed)
-    
-    
-    time++;
-    if(time >= 200)
-    {
-        PORTA_PA3 ^= 1; 
-        time = 0;
-        
-        //(void)u8fnSci_TxChar(SCI_CH0, 31);
+    /*/(void)u8fnSci_TxChar(SCI_CH0, 31);
         vfnSci_Tx(SCI_CH0, (u8*)&au8Temp[0], sizeof(au8Temp));
     } 
     
@@ -200,33 +135,69 @@ TASK(Task_16ms)
     if(SPI0SR_SPTEF == 1)
     {
         SPI0DRL = 0xAA;
-    }
-      
-    (void)Os_TerminateTask();     
+    }   */
+    (void)Os_TerminateTask();    
 }
-/****************************************************************************************************/
-/****************************************************************************************************/
+
 /**
-* \brief    Task 5 - 32ms Period
-* \author   Gerardo Valdovinos
-* \param    void
-* \return   void   
-*/
-TASK(Task_32ms)
-{
-    ;    
-}
-/****************************************************************************************************/
-/****************************************************************************************************/
-/**
-* \brief    Task 6 - 64ms Period
+* \brief    Task 4 - 64ms Period
 * \author   Gerardo Valdovinos
 * \param    void
 * \return   void   
 */
 TASK(Task_64ms)
+{   
+    /* This task controls the leds */
+    vfnLedManager(&astLed[0]);
+    vfnLedManager(&astLed[1]);
+    vfnLedManager(&astLed[2]);
+    vfnLedManager(&astLed[3]);
+      
+    (void)Os_TerminateTask();     
+}
+
+/**
+* \brief    Task 5 - 128ms Period
+* \author   Gerardo Valdovinos
+* \param    void
+* \return   void   
+*/
+TASK(Task_128ms)
 {
-    ;    
+    static u8 u8B1, u8B0;
+    
+    /* This task controls Button */
+    if(PTP_PTP0 == 1)
+    {
+        u8B0++;        
+    }
+    else if( (PTP_PTP0 == 0) && (u8B0 != 0))
+    {
+        /* Reset debounce counter */
+        u8B0 = 0;
+        
+        if(u8B0 > 15)
+            u8Button0 = BUTTON_0_LONG;
+        else
+            u8Button0 = BUTTON_0;
+    }
+    
+    if(PTP_PTP1 == 1)
+    {
+        u8B1++;        
+    }
+    else if( (PTP_PTP1 == 0) && (u8B1 != 0))
+    {
+        /* Reset debounce counter */
+        u8B1 = 0;
+        
+        if(u8B1 > 15)
+            u8Button1 = BUTTON_1_LONG;
+        else
+            u8Button1 = BUTTON_1;
+    } 
+    
+    (void)Os_TerminateTask();    
 }
 
 /**
@@ -237,24 +208,24 @@ TASK(Task_64ms)
 */
 void vfnLedManager(tstLed *pstLed)
 {  
-    switch(stLed->u8Status)
+    switch(pstLed->u8Status)
     {
     case LED_ON:
-        PORTA |= (1 << stLed->u8LedMask);
+        PORTA |= (1 << pstLed->u8LedMask);
         break;
     case LED_OFF:
-        PORTA &= ~(1 << stLed->u8LedMask);
+        PORTA &= ~(1 << pstLed->u8LedMask);
         break;
     case LED_TOGGLE:
-        stLed.u8FreqCnt++;
-        if(stLed->u8FreqCnt >= stLed->u8Freq )
+        pstLed->u8FreqCnt++;
+        if(pstLed->u8FreqCnt >= pstLed->u8Freq )
         {
-            stLed->u8FreqCnt = 0;
-            PORTA ^= (1 << stLed->u8LedMask);
+            pstLed->u8FreqCnt = 0;
+            PORTA ^= (1 << pstLed->u8LedMask);
             
-            if( (stLed->u8Cnt != 0xFF) && (stLed->u8Cnt >= (stLed->u8Times * 2)))
+            if( (pstLed->u8Cnt != 0xFF) && (pstLed->u8Cnt >= (pstLed->u8Times * 2)))
             {
-                stLed->u8Status = LED_OFF;
+                pstLed->u8Status = LED_OFF;
             }
         }
         break;
